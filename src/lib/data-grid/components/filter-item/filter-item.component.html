@@ -1,0 +1,80 @@
+@if (header(); as header) {
+  <div class="dropdown">
+    <button
+      class="join"
+      [attr.popovertarget]="`${header.id}-popover`"
+      [style]="`anchor-name: --${header.id}`"
+    >
+      <button class="btn btn-primary btn-xs btn-soft join-item">
+        {{ header.id | translate }}
+      </button>
+      <span class="btn btn-xs btn-primary join-item">
+        {{ value().join(', ') }}
+      </span>
+    </button>
+
+    <div
+      #mainPopover
+      popover
+      [id]="`${header.id}-popover`"
+      class="open:menu bg-base-100 shadow-md w-64 overflow-visible"
+      [style]="
+        `position-anchor: --${header.id}; position-area: bottom span-right`
+      "
+      (toggle)="onPopoverToggle($event)"
+    >
+      <header class="flex justify-between items-center">
+        <span class="text-xs">{{ header.id | translate }}</span>
+        <button
+          [attr.popovertarget]="`${header.id}-popover-submenu`"
+          class="btn btn-ghost btn-xs btn-square"
+          [style]="`anchor-name: --${header.id}-sub`"
+        >
+          <span class="icon-[mdi--dots-vertical] size-4"></span>
+        </button>
+
+        <ul
+          [id]="`${header.id}-popover-submenu`"
+          popover
+          class="open:menu bg-base-100 shadow-md menu-sm"
+          [style]="
+            `position-anchor: --${header.id}-sub; position-area: bottom span-right`
+          "
+        >
+          <li (click)="removeFilter()">
+            <a class="text-error">{{ 'remove' | translate }}</a>
+          </li>
+        </ul>
+      </header>
+
+      @if (inputType() === 'input') {
+        <input
+          #filterInput
+          class="input input-sm"
+          spellcheck="false"
+          [ngModel]="value().join(', ')"
+          (ngModelChange)="setValue($event)"
+        />
+      } @else {
+        <ng-select
+          clearable="false"
+          [items]="selectOptions()"
+          [ngModel]="value()"
+          (ngModelChange)="setValue($event)"
+        >
+          <ng-template ng-label-tmp let-item="item">
+            <span class="badge badge-soft" [attr.data-value]="item"
+              >{{ item | translate }}
+            </span>
+          </ng-template>
+
+          <ng-template ng-option-tmp let-item="item" let-index="index">
+            <span class="badge badge-soft" [attr.data-value]="item">{{
+              item | translate
+            }}</span>
+          </ng-template>
+        </ng-select>
+      }
+    </div>
+  </div>
+}

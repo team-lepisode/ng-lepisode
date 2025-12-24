@@ -1,0 +1,134 @@
+<div class="overflow-auto">
+  <div
+    class="w-fit"
+    [style]="store.columnSizeVars()"
+    [style.width.px]="store.table.getTotalSize()"
+  >
+    <div class="thead" #tableHeader>
+      @for (
+        headerGroup of store.table.getHeaderGroups();
+        track headerGroup.id
+      ) {
+        <div class="flex tr w-fit">
+          @for (header of headerGroup.headers; track header.id) {
+            @if (!header.isPlaceholder) {
+              <div class="relative th" [tableResizableHeader]="header.id">
+                <button
+                  [attr.popovertarget]="`${header.id}-header-menu`"
+                  class="flex items-center justify-start gap-2 btn btn-ghost btn-sm btn-block"
+                  [style]="`anchor-name: --${header.id}-header`"
+                >
+                  <span class="size-4" [class]="getHeaderIcon(header)"></span>
+                  <ng-container
+                    *flexRender="
+                      header.column.columnDef.header;
+                      props: header.getContext();
+                      let header
+                    "
+                  >
+                    {{ header | translate }}
+                  </ng-container>
+
+                  @if (header.column.getIsSorted()) {
+                    <span
+                      class="icon-[tabler--chevron-up] ml-auto size-4"
+                      [class.rotate-180]="header.column.getIsSorted() === 'asc'"
+                    ></span>
+                  }
+                </button>
+
+                <div
+                  [id]="`${header.id}-header-menu`"
+                  popover
+                  #headerPopover
+                  [style]="
+                    `position-anchor: --${header.id}-header; position-area: bottom span-right`
+                  "
+                >
+                  <app-header-menu
+                    [column]="header.column"
+                    (close)="headerPopover.hidePopover()"
+                  />
+                </div>
+
+                <div
+                  class="resizer"
+                  [class.isResizing]="header.column.getIsResizing()"
+                  (dblclick)="header.column.resetSize()"
+                  (mousedown)="header.getResizeHandler()($event)"
+                  (touchstart)="header.getResizeHandler()($event)"
+                ></div>
+              </div>
+            }
+          }
+        </div>
+      }
+    </div>
+    <div class="tbody min-h-96">
+      @for (row of store.table.getRowModel().rows; track row.id) {
+        <tr>
+          @for (cell of row.getVisibleCells(); track cell.id) {
+            <td [tableResizableCell]="cell.column.id">
+              <div class="cell-content">
+                <ng-container
+                  *flexRender="
+                    cell.column.columnDef.cell;
+                    props: cell.getContext();
+                    let cell
+                  "
+                >
+                  <div [innerHTML]="cell | sanitizeHtml"></div>
+                </ng-container>
+
+                @if (cell.column.columnDef.meta?.detail === true) {
+                  <button
+                    tabindex="-1"
+                    class="opacity-0 data-grid-detail-button btn btn-square btn-sm"
+                    (click)="store.onDetailClick?.(row.original)"
+                  >
+                    <span class="icon-[mi--document] size-4"></span>
+                  </button>
+                }
+              </div>
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr>
+          <td [attr.colspan]="store.table.getVisibleFlatColumns().length">
+            <div class="flex flex-col items-center justify-center gap-4 py-12">
+              <span
+                class="icon-[tabler--folder-x] size-12 text-base-content/30"
+              ></span>
+              <p class="text-base-content/50">
+                {{ 'no_data' | translate }}
+              </p>
+            </div>
+          </td>
+        </tr>
+      }
+    </div>
+    <tfoot>
+      @for (
+        footerGroup of store.table.getFooterGroups();
+        track footerGroup.id
+      ) {
+        <tr>
+          @for (footer of footerGroup.headers; track footer.id) {
+            <th>
+              <ng-container
+                *flexRender="
+                  footer.column.columnDef.footer;
+                  props: footer.getContext();
+                  let footer
+                "
+              >
+                {{ footer }}
+              </ng-container>
+            </th>
+          }
+        </tr>
+      }
+    </tfoot>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<div class="grid grid-cols-5 gap-4 select-none">
+  @for (row of store.table.getRowModel().rows; track row.id) {
+    <button
+      type="button"
+      class="transition-shadow shadow-sm cursor-pointer card bg-base-100 hover:shadow-md"
+      (click)="store.onDetailClick?.(row.original)"
+    >
+      @if (store.imageField()) {
+        @let value = row.original[store.imageField()!];
+        @if (value) {
+          <figure>
+            <img [src]="value" alt="Image" />
+          </figure>
+        }
+      }
+
+      <div class="card-body">
+        @if (store.titleField()) {
+          @let title = row.original[store.titleField()!];
+          <h3 class="card-title">
+            {{ title || ('no_title' | translate) }}
+          </h3>
+        }
+
+        @if (store.badgeField()) {
+          @let badge = row.original[store.badgeField()!];
+          @if (badge) {
+            <span class="badge badge-soft" [attr.data-value]="badge">
+              {{ badge }}
+            </span>
+          }
+        }
+
+        @if (store.descriptionField()) {
+          @let description = row.original[store.descriptionField()!];
+          <p>
+            {{ description || ('no_description' | translate) }}
+          </p>
+        }
+      </div>
+    </button>
+  }
+</div>

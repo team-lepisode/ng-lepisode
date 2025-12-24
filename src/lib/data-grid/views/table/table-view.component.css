@@ -1,0 +1,80 @@
+
+  /* reset table */
+  table {
+    background-color: var(--color-base-100);
+    border-radius: var(--radius-field);
+    border-collapse: collapse;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  tbody {
+    display: block;
+    overflow-y: auto;
+  }
+
+  tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-bottom: 1px solid var(--color-base-200);
+
+    tbody & {
+      transition: background-color 0.15s ease-in-out;
+
+      &:hover {
+        background-color: oklch(from var(--color-primary) l c h / 0.1);
+      }
+
+      &:focus-within {
+        background-color: oklch(from var(--color-primary) l c h / 0.2);
+      }
+    }
+  }
+
+  td {
+    margin: 0;
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    user-select: none;
+
+    & div.cell-content {
+      padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+      height: 100%;
+      border-radius: var(--radius-field);
+      transition: box-shadow 0.15s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      &:focus-within {
+        box-shadow: var(--shadow-md);
+      }
+
+      &:hover button.data-grid-detail-button {
+        transition: opacity 0.15s ease-in-out;
+        opacity: 1;
+      }
+    }
+  }
+
+  thead th {
+    color: oklch(from var(--color-base-content) l c h / 0.7);
+  }
+
+  .resizer {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    right: 0;
+    width: 4px;
+    background: oklch(from var(--color-primary) l c h / 0.25);
+    cursor: col-resize;
+    user-select: none;
+    touch-action: none;
+
+    &:hover {
+      background: var(--color-primary);
+    }
+  }

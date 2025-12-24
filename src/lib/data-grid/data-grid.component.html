@@ -1,0 +1,171 @@
+<div class="data-grid-wrapper" [attr.data-view]="store.view()">
+  <section class="flex items-center justify-between print:hidden">
+    <div id="data-grid-view-tabs" class="tabs data-grid-views tabs-border">
+      <button
+        class="flex items-center gap-1 tab"
+        [class.tab-active]="store.view() === 'table'"
+        (click)="setView('table')"
+      >
+        <span class="icon-[tabler--table-dashed]"></span>
+        {{ 'table' | translate }}
+      </button>
+
+      @if (!store.galleryDisabled()) {
+        <button
+          class="flex items-center gap-1 tab"
+          [class.tab-active]="store.view() === 'gallery'"
+          (click)="setView('gallery')"
+        >
+          <span class="icon-[tabler--layout-grid]"></span>
+          {{ 'gallery' | translate }}
+        </button>
+      }
+      @if (!store.calendarDisabled()) {
+        <button
+          class="flex items-center gap-1 tab"
+          [class.tab-active]="store.view() === 'calendar'"
+          (click)="setView('calendar')"
+        >
+          <span class="icon-[tabler--calendar-event-filled]"></span>
+          {{ 'calendar' | translate }}
+        </button>
+      }
+    </div>
+  </section>
+
+  @if (store.view() !== 'calendar') {
+    <section class="flex items-center justify-between print:hidden">
+      <div class="flex gap-1 items-center">
+        @for (filter of store.table.getState().columnFilters; track $index) {
+          <lepi-data-grid-filter-item
+            [filter]="filter"
+          ></lepi-data-grid-filter-item>
+        }
+
+        <div class="dropdown">
+          <button tabindex="0" class="btn btn-xs btn-primary btn-soft">
+            <span class="icon-[tabler--plus]"></span>
+            {{ 'add_filter' | translate }}
+          </button>
+
+          <ul
+            #filterDropdown
+            tabindex="-1"
+            class="dropdown-content menu bg-base-100 shadow-md w-64"
+          >
+            @for (
+              headerGroup of store.table.getHeaderGroups();
+              track headerGroup.id
+            ) {
+              @for (header of headerGroup.headers; track header.id) {
+                @if (
+                  header.column.getCanFilter() && !header.column.getIsFiltered()
+                ) {
+                  <li>
+                    <a
+                      tabindex="0"
+                      (click)="
+                        store.addFilter(header.id); filterDropdown.hidePopover()
+                      "
+                      (keypress)="
+                        store.addFilter(header.id); filterDropdown.hidePopover()
+                      "
+                    >
+                      <span [class]="getHeaderIcon(header)"></span>
+                      {{ header.id | translate }}
+                    </a>
+                  </li>
+                }
+              }
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <label class="input input-sm">
+          <span class="icon-[mdi--magnify] size-5"></span>
+          <input
+            type="search"
+            class="text-sm"
+            [ngModel]="store.query()"
+            (ngModelChange)="store.query.set($event)"
+          />
+        </label>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <ng-content select="[buttons]"></ng-content>
+        </div>
+      </div>
+    </section>
+  }
+
+  <div class="data-grid-container" #dataGridContainer>
+    <ng-container *ngComponentOutlet="viewComponent()" />
+  </div>
+
+  @if (store.view() !== 'calendar') {
+    <div
+      id="data-grid-pagination"
+      class="flex justify-end gap-1 px-2 print:hidden"
+    >
+      <select
+        class="select select-sm w-[20ch]"
+        [ngModel]="store.pageSize()"
+        (ngModelChange)="store.pageSize.set($event)"
+      >
+        @for (size of [10, 20, 30, 40, 50]; track size) {
+          <option [value]="size">{{ size }}</option>
+        }
+      </select>
+
+      <div class="join">
+        <button
+          class="join-item btn btn-square btn-sm"
+          (click)="goFirstPage()"
+          [disabled]="!store.table.getCanPreviousPage()"
+        >
+          <span class="icon-[mdi--chevron-double-left] size-5"></span>
+        </button>
+        <button
+          class="join-item btn btn-square btn-sm"
+          (click)="goPreviousPage()"
+          [disabled]="!store.table.getCanPreviousPage()"
+        >
+          <span class="icon-[mdi--chevron-left] size-5"></span>
+        </button>
+      </div>
+
+      <div class="join">
+        @for (_pageIndex of store.table.getPageCount() | repeat; track $index) {
+          <button
+            class="join-item btn btn-sm btn-square"
+            [class.btn-primary]="
+              store.table.getState().pagination.pageIndex === _pageIndex
+            "
+            (click)="store.pageIndex.set(_pageIndex)"
+          >
+            {{ _pageIndex + 1 }}
+          </button>
+        }
+      </div>
+
+      <div class="join">
+        <button
+          class="join-item btn btn-square btn-sm"
+          (click)="goNextPage()"
+          [disabled]="!store.table.getCanNextPage()"
+        >
+          <span class="icon-[mdi--chevron-right] size-5"></span>
+        </button>
+        <button
+          class="join-item btn btn-square btn-sm"
+          (click)="goLastPage()"
+          [disabled]="!store.table.getCanNextPage()"
+        >
+          <span class="icon-[mdi--chevron-double-right] size-5"></span>
+        </button>
+      </div>
+    </div>
+  }
+</div>

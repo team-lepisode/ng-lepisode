@@ -1,0 +1,55 @@
+<!-- eslint-disable @angular-eslint/template/mouse-events-have-key-events -->
+<ul
+  ngMenu
+  class="menu shadow-md dropdown bg-base-100 w-64"
+  (mouseover)="hasInteracted.set(true)"
+  (focusin)="hasInteracted.set(true)"
+>
+  <ng-template ngMenuContent>
+    <li ngMenuItem value="filter">
+      <a>
+        <span class="icon-[tabler--filter-2]"></span>
+        {{ 'filter' | translate }}</a
+      >
+    </li>
+    <li ngMenuItem value="sort" #sortItem [submenu]="sortMenu()">
+      <a>
+        <span class="icon-[tabler--arrows-sort]"></span>
+        {{ 'sort' | translate }}
+        <span class="icon-[tabler--chevron-right]"></span>
+      </a>
+    </li>
+
+    <ng-template
+      [cdkConnectedOverlayOpen]="hasInteracted()"
+      [cdkConnectedOverlay]="{ origin: sortItem, usePopover: 'inline' }"
+      [cdkConnectedOverlayPositions]="[
+        {
+          originX: 'end',
+          originY: 'top',
+          overlayY: 'top',
+          overlayX: 'start',
+          offsetX: 6,
+        },
+      ]"
+      cdkAttachPopoverAsChild
+    >
+      <ul class="bg-base-100 shadow-md" ngMenu #sortMenu="ngMenu">
+        <ng-template ngMenuContent>
+          <li ngMenuItem value="asc">
+            <a (click)="setSortDirection('asc')">
+              <span class="icon-[tabler--sort-ascending]"></span>
+              {{ 'sort.ascending' | translate }}
+            </a>
+          </li>
+          <li ngMenuItem value="desc">
+            <a (click)="setSortDirection('desc')">
+              <span class="icon-[tabler--sort-descending]"></span>
+              {{ 'sort.descending' | translate }}
+            </a>
+          </li>
+        </ng-template>
+      </ul>
+    </ng-template>
+  </ng-template>
+</ul>
