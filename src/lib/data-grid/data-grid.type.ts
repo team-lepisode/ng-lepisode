@@ -166,7 +166,7 @@ type DataGridListColumnDef = DataGridCommonColumnDef & {
   type: 'list';
   items?: string[];
   field: string | (() => string);
-  editable?: { items: string[] } | boolean;
+  editable?: boolean;
 };
 
 type DataGridArrayColumnDef = DataGridCommonColumnDef & {
@@ -176,7 +176,6 @@ type DataGridArrayColumnDef = DataGridCommonColumnDef & {
   editable?:
     | {
         allowAdditions?: boolean;
-        items?: string[];
       }
     | boolean;
 };

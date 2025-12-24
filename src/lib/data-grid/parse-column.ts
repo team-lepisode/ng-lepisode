@@ -128,9 +128,7 @@ export const parseColumn = (
 
     // list editable — safely read items
     if (column.type === 'list') {
-      const items = Array.isArray((editableOpts as any).items)
-        ? (editableOpts as any).items
-        : undefined;
+      const items = column.items;
 
       columnDef.cell = (cell) => {
         const value = cell.getValue();
@@ -166,6 +164,7 @@ export const parseColumn = (
             value,
             type: column.type,
             allowAdditions,
+            items: column.items,
           },
           outputs: {
             blur: (newValue: string[]) => {

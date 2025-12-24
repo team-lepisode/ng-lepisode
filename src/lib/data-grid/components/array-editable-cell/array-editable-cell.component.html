@@ -2,6 +2,7 @@
   clearable="false"
   bindLabel="value"
   multiple
+  [items]="items()"
   [ngModel]="modelValue()"
   [addTag]="allowAdditions() ? onTagAdd.bind(this) : false"
   (blur)="blur.emit(modelValue())"

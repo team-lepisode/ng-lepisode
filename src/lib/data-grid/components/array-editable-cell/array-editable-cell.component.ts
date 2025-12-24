@@ -36,6 +36,7 @@ export class ArrayEditableCellComponent {
   readonly type = input<DataGridColumnTypes>('array');
   readonly blur = output<unknown>();
   readonly allowAdditions = input<boolean>(false);
+  readonly items = input<string[]>([]);
 
   constructor() {
     effect(() => {
