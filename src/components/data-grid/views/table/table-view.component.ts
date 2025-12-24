@@ -7,7 +7,7 @@ import { DataGridComponentStore } from '../../data-grid.component.store';
 import { DataGridColumnTypes } from '../../data-grid.type';
 import { TableResizableCell } from '../../directives/data-grid-resizable-cell.directive';
 import { TableResizableHeader } from '../../directives/data-grid-resizable-header.directive';
-import { SanitizeHtmlPipe } from '../../pipes/sanitize-html.pipe';
+import { SanitizeHtmlPipe } from '../../../../pipes/sanitize-html/sanitize-html.pipe';
 
 @Component({
   templateUrl: './table-view.component.html',
