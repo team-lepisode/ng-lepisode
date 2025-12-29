@@ -18,7 +18,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ColumnFilter } from '@tanstack/angular-table';
 import { DataGridComponentStore } from '../../data-grid.component.store';
 import { DataGridColumnTypes } from '../../data-grid.type';
-import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'lepi-data-grid-filter-item',
@@ -30,7 +29,6 @@ import { JsonPipe } from '@angular/common';
     NgSelectComponent,
     NgLabelTemplateDirective,
     NgOptionTemplateDirective,
-    JsonPipe,
   ],
 })
 export class DataGridFilterItemComponent {

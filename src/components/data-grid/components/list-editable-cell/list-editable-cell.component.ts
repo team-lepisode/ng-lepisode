@@ -15,6 +15,7 @@ import {
 } from '@ng-select/ng-select';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { LowerCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-list-editable-cell',
@@ -25,6 +26,7 @@ import { FormsModule } from '@angular/forms';
     NgOptionTemplateDirective,
     NgLabelTemplateDirective,
     FormsModule,
+    LowerCasePipe,
   ],
   host: {
     style: 'display: block; width: 100%; height: 100%;',

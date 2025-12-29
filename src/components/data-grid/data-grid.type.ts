@@ -1,3 +1,4 @@
+import { ComponentType } from '@angular/cdk/overlay';
 import { CellContext, RowData } from '@tanstack/angular-table';
 
 declare module '@tanstack/angular-table' {
@@ -123,9 +124,10 @@ type DataGridCommonColumnDef = {
   filterable?: boolean;
   headerIconClass?: string;
   formatter?: (cell: CellContext<any, unknown>) => string;
+  component?: ComponentType<any>;
 };
 
-type DataGridTextColumnDef = DataGridCommonColumnDef & {
+export type DataGridTextColumnDef = DataGridCommonColumnDef & {
   type?: 'text';
   field: string | (() => string);
   editable?: boolean;
@@ -133,7 +135,7 @@ type DataGridTextColumnDef = DataGridCommonColumnDef & {
   placeholder?: string;
 };
 
-type DataGridDateColumnDef = DataGridCommonColumnDef & {
+export type DataGridDateColumnDef = DataGridCommonColumnDef & {
   type: 'date';
   field: string | (() => string);
   dateFormat?: string;
@@ -145,7 +147,7 @@ type DataGridDateColumnDef = DataGridCommonColumnDef & {
     | boolean;
 };
 
-type DataGridNumberColumnDef = DataGridCommonColumnDef & {
+export type DataGridNumberColumnDef = DataGridCommonColumnDef & {
   type: 'number';
   field: string | (() => string);
   editable?:
@@ -156,20 +158,20 @@ type DataGridNumberColumnDef = DataGridCommonColumnDef & {
     | boolean;
 };
 
-type DataGridBooleanColumnDef = DataGridCommonColumnDef & {
+export type DataGridBooleanColumnDef = DataGridCommonColumnDef & {
   type: 'boolean';
   field: string | (() => string);
   editable?: boolean;
 };
 
-type DataGridListColumnDef = DataGridCommonColumnDef & {
+export type DataGridListColumnDef = DataGridCommonColumnDef & {
   type: 'list';
   items?: string[];
   field: string | (() => string);
   editable?: boolean;
 };
 
-type DataGridArrayColumnDef = DataGridCommonColumnDef & {
+export type DataGridArrayColumnDef = DataGridCommonColumnDef & {
   type: 'array';
   items?: string[];
   field: string | (() => string);
@@ -180,6 +182,6 @@ type DataGridArrayColumnDef = DataGridCommonColumnDef & {
     | boolean;
 };
 
-type DataGridRowNumberColumnDef = DataGridCommonColumnDef & {
+export type DataGridRowNumberColumnDef = DataGridCommonColumnDef & {
   type: 'rowNumber';
 };

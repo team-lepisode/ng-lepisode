@@ -10,7 +10,7 @@ import {
   Table,
 } from '@tanstack/angular-table';
 import { DataGridColumnDef, DataGridOptions } from './data-grid.type';
-import { parseColumn } from './parse-column';
+import { parseColumn } from './libs/parse-column';
 
 @Injectable()
 export class DataGridComponentStore {
