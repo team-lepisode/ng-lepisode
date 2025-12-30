@@ -7,15 +7,14 @@ import {
   output,
   untracked,
 } from '@angular/core';
-import { DataGridColumnTypes } from '../../data-grid.type';
+import { FormsModule } from '@angular/forms';
 import {
   NgLabelTemplateDirective,
   NgOptionTemplateDirective,
   NgSelectComponent,
 } from '@ng-select/ng-select';
 import { TranslatePipe } from '@ngx-translate/core';
-import { FormsModule } from '@angular/forms';
-import { LowerCasePipe } from '@angular/common';
+import { DataGridColumnTypes } from '../../data-grid.type';
 
 @Component({
   selector: 'app-list-editable-cell',
@@ -26,7 +25,6 @@ import { LowerCasePipe } from '@angular/common';
     NgOptionTemplateDirective,
     NgLabelTemplateDirective,
     FormsModule,
-    LowerCasePipe,
   ],
   host: {
     style: 'display: block; width: 100%; height: 100%;',

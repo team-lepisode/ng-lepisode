@@ -1,0 +1,485 @@
+@if (editor) {
+  <!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+  <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+  <div class="editor-container">
+    <header class="editor-toolbar">
+      <select
+        class="select select-sm w-[16ch]"
+        (change)="
+          editor.chain().focus().setFontSize($any($event.target).value).run()
+        "
+      >
+        <option
+          value="11px"
+          [selected]="editor.isActive('textStyle', { fontSize: '11px' })"
+        >
+          11px
+        </option>
+        <option
+          value="13px"
+          [selected]="editor.isActive('textStyle', { fontSize: '13px' })"
+        >
+          13px
+        </option>
+        <option
+          value="14px"
+          [selected]="editor.isActive('textStyle', { fontSize: '15px' })"
+        >
+          15px
+        </option>
+        <option
+          value="16px"
+          [selected]="editor.isActive('textStyle', { fontSize: '16px' })"
+        >
+          16px
+        </option>
+        <option
+          value="19px"
+          [selected]="editor.isActive('textStyle', { fontSize: '19px' })"
+        >
+          19px
+        </option>
+        <option
+          value="24px"
+          [selected]="editor.isActive('textStyle', { fontSize: '24px' })"
+        >
+          24px
+        </option>
+        <option
+          value="28px"
+          [selected]="editor.isActive('textStyle', { fontSize: '28px' })"
+        >
+          28px
+        </option>
+        <option
+          value="30px"
+          [selected]="editor.isActive('textStyle', { fontSize: '30px' })"
+        >
+          30px
+        </option>
+        <option
+          value="34px"
+          [selected]="editor.isActive('textStyle', { fontSize: '34px' })"
+        >
+          34px
+        </option>
+        <option
+          value="38px"
+          [selected]="editor.isActive('textStyle', { fontSize: '38px' })"
+        >
+          38px
+        </option>
+      </select>
+
+      <div class="join">
+        <button
+          type="button"
+          data-tip="굵기 적용"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          [class.btn-active]="editor.isActive('bold')"
+          (click)="editor.chain().focus().toggleBold().run()"
+        >
+          <span class="icon-[mdi--format-bold] size-6"></span>
+        </button>
+        <button
+          type="button"
+          data-tip="기울이기 적용"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          [class.btn-active]="editor.isActive('italic')"
+          (click)="editor.chain().focus().toggleItalic().run()"
+        >
+          <span class="icon-[mdi--format-italic] size-6"></span>
+        </button>
+        <button
+          type="button"
+          data-tip="밑줄 적용"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          [class.btn-active]="editor.isActive('underline')"
+          (click)="editor.chain().focus().toggleUnderline().run()"
+        >
+          <span class="icon-[mdi--format-underline] size-6"></span>
+        </button>
+        <button
+          type="button"
+          data-tip="취소선 적용"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          [class.btn-active]="editor.isActive('strike')"
+          (click)="editor.chain().focus().toggleStrike().run()"
+        >
+          <span class="icon-[mdi--format-strikethrough] size-6"></span>
+        </button>
+
+        <button
+          type="button"
+          data-tip="글자색 변경"
+          class="gap-0 btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          (click)="colorInput.click()"
+        >
+          <input
+            #colorInput
+            list="colors"
+            type="color"
+            class="w-0"
+            (input)="editor.chain().focus().setColor($event.target.value).run()"
+          />
+          <span
+            class="icon-[mdi--format-color] size-6"
+            [style.color]="
+              editor.getAttributes('textStyle')['color'] ?? 'white'
+            "
+          ></span>
+        </button>
+
+        <button
+          type="button"
+          data-tip="강조 적용"
+          class="gap-0 btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          (click)="editor.chain().focus().toggleHighlight().run()"
+        >
+          <input
+            #highlight
+            list="colors"
+            type="color"
+            class="w-0"
+            (input)="
+              editor
+                .chain()
+                .focus()
+                .setHighlight({ color: $event.target.value })
+                .run()
+            "
+          />
+          <span
+            class="icon-[mdi--format-color-highlight] size-6"
+            [style.color]="
+              editor.getAttributes('highlight')['color'] ?? 'white'
+            "
+          ></span>
+        </button>
+      </div>
+
+      <div class="join">
+        <button
+          type="button"
+          data-tip="왼쪽 정렬"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          [class.btn-active]="editor.isActive({ textAlign: 'left' })"
+          (click)="editor.chain().focus().setTextAlign('left').run()"
+        >
+          <span class="icon-[mdi--format-align-left] size-6"></span>
+        </button>
+        <button
+          type="button"
+          data-tip="가운데 정렬"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          [class.btn-active]="editor.isActive({ textAlign: 'center' })"
+          (click)="editor.chain().focus().setTextAlign('center').run()"
+        >
+          <span class="icon-[mdi--format-align-center] size-6"></span>
+        </button>
+        <button
+          type="button"
+          data-tip="오른쪽 정렬"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          [class.btn-active]="editor.isActive({ textAlign: 'right' })"
+          (click)="editor.chain().focus().setTextAlign('right').run()"
+        >
+          <span class="icon-[mdi--format-align-right] size-6"></span>
+        </button>
+        <button
+          type="button"
+          data-tip="양쪽 정렬"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          [class.btn-active]="editor.isActive({ textAlign: 'justify' })"
+          (click)="editor.chain().focus().setTextAlign('justify').run()"
+        >
+          <span class="icon-[mdi--format-align-justify] size-6"></span>
+        </button>
+      </div>
+
+      @if (!editor.isActive('table')) {
+        <div class="join">
+          <button
+            type="button"
+            data-tip="글머리 기호 목록"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            [class.btn-active]="editor.isActive('bulletList')"
+            (click)="editor.chain().focus().toggleBulletList().run()"
+          >
+            <span class="icon-[mdi--format-list-bulleted] size-6"></span>
+          </button>
+          <button
+            type="button"
+            data-tip="번호 매기기 목록"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            [class.btn-active]="editor.isActive('orderedList')"
+            (click)="editor.chain().focus().toggleOrderedList().run()"
+          >
+            <span class="icon-[mdi--format-list-numbered] size-6"></span>
+          </button>
+        </div>
+
+        <div class="join">
+          <button
+            type="button"
+            data-tip="위첨자"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            [class.btn-active]="editor.isActive('superscript')"
+            (click)="editor.chain().focus().toggleSuperscript().run()"
+          >
+            <span class="icon-[mdi--format-superscript] size-6"></span>
+          </button>
+          <button
+            type="button"
+            data-tip="아래첨자"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            [class.btn-active]="editor.isActive('subscript')"
+            (click)="editor.chain().focus().toggleSubscript().run()"
+          >
+            <span class="icon-[mdi--format-subscript] size-6"></span>
+          </button>
+        </div>
+      } @else {
+        <div class="join">
+          <button
+            type="button"
+            data-tip="앞에 열 추가"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            (click)="editor.chain().focus().addColumnBefore().run()"
+          >
+            <span class="icon-[mdi--table-column-plus-before] size-6"></span>
+          </button>
+          <button
+            type="button"
+            data-tip="뒤에 열 추가"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            (click)="editor.chain().focus().addColumnAfter().run()"
+          >
+            <span class="icon-[mdi--table-column-plus-after] size-6"></span>
+          </button>
+
+          <button
+            type="button"
+            data-tip="열 삭제"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            (click)="editor.chain().focus().deleteColumn().run()"
+          >
+            <span class="icon-[mdi--table-column-remove] size-6"></span>
+          </button>
+
+          <button
+            type="button"
+            data-tip="앞에 행 추가"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            (click)="editor.chain().focus().addRowBefore().run()"
+          >
+            <span class="icon-[mdi--table-row-plus-before] size-6"></span>
+          </button>
+          <button
+            type="button"
+            data-tip="뒤에 행 추가"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            (click)="editor.chain().focus().addRowAfter().run()"
+          >
+            <span class="icon-[mdi--table-row-plus-after] size-6"></span>
+          </button>
+
+          <button
+            type="button"
+            data-tip="행 삭제"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            (click)="editor.chain().focus().deleteRow().run()"
+          >
+            <span class="icon-[mdi--table-row-remove] size-6"></span>
+          </button>
+
+          <button
+            type="button"
+            data-tip="셀 병합"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            [disabled]="!editor.can().mergeCells()"
+            (click)="editor.chain().focus().mergeCells().run()"
+          >
+            <span class="icon-[mdi--table-merge-cells] size-6"></span>
+          </button>
+
+          <button
+            type="button"
+            data-tip="셀 분할"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            [disabled]="!editor.can().splitCell()"
+            (click)="editor.chain().focus().splitCell().run()"
+          >
+            <span class="icon-[mdi--table-split-cell] size-6"></span>
+          </button>
+
+          <button
+            type="button"
+            data-tip="표 삭제"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            (click)="editor.chain().focus().deleteTable().run()"
+          >
+            <span class="icon-[mdi--table-large-remove] size-6"></span>
+          </button>
+        </div>
+      }
+
+      <div class="join">
+        <button
+          type="button"
+          data-tip="링크 삽입"
+          popovertarget="link-input"
+          style="anchor-name: --link-input-anchor"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          [class.btn-active]="editor.isActive('link')"
+        >
+          <span class="icon-[mdi--link] size-6"></span>
+        </button>
+
+        <div
+          popover
+          id="link-input"
+          #linkInputRef
+          class="bg-base-100 rounded-md p-2 w-96 shadow-sm"
+          style="
+            position-anchor: --link-input-anchor;
+            position-area: bottom span-right;
+          "
+        >
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">링크 URL</legend>
+            <div class="join">
+              <input
+                #urlInput
+                type="url"
+                class="input join-item input-sm invalid:input-error text-base-content"
+                placeholder="URL을 입력해주세요."
+                pattern="^(http|https|ftp)://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(/[^s]*)?$"
+              />
+              <button
+                type="button"
+                class="btn btn-sm btn-primary join-item btn-square"
+                [disabled]="!urlInput.value || !urlInput.validity.valid"
+                (click)="
+                  editor
+                    .chain()
+                    .focus()
+                    .insertContent(urlInput.value)
+                    .extendMarkRange('link')
+                    .setLink({ href: urlInput.value, target: '_blank' })
+                    .run();
+                  linkInputRef.hidePopover()
+                "
+              >
+                적용
+              </button>
+            </div>
+          </fieldset>
+        </div>
+
+        <button
+          type="button"
+          data-tip="표 삽입"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          (click)="
+            editor
+              .chain()
+              .focus()
+              .insertTable({ rows: 3, cols: 3, withHeaderRow: false })
+              .run()
+          "
+        >
+          <span class="icon-[mdi--table-large-plus] size-6"></span>
+        </button>
+
+        @if (image()) {
+          <button
+            type="button"
+            data-tip="이미지 삽입"
+            class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+            (click)="selectImage($event)"
+          >
+            <span class="icon-[mdi--image-plus] size-6"></span>
+          </button>
+        }
+      </div>
+
+      <div class="join">
+        <!-- undo -->
+        <button
+          type="button"
+          data-tip="실행 취소"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          (click)="editor.chain().focus().undo().run()"
+          [class.btn-disabled]="!editor.can().undo()"
+        >
+          <span class="icon-[mdi--undo] size-6"></span>
+        </button>
+        <!-- redo -->
+        <button
+          type="button"
+          data-tip="다시 실행"
+          class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+          (click)="editor.chain().focus().redo().run()"
+          [class.btn-disabled]="!editor.can().redo()"
+        >
+          <span class="icon-[mdi--redo] size-6"></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="editor-content" (click)="editor.commands.focus()">
+      <tiptap-editor [editor]="editor" [(ngModel)]="value" />
+    </div>
+  </div>
+
+  <datalist id="colors">
+    <option>#f5f5f5</option>
+    <option>#d4d4d4</option>
+    <option>#737373</option>
+    <option>#404040</option>
+    <option>#171717</option>
+
+    <option>#fca5a5</option>
+    <option>#f87171</option>
+    <option>#ef4444</option>
+    <option>#dc2626</option>
+    <option>#b91c1c</option>
+
+    <option>#fdba74</option>
+    <option>#fb923c</option>
+    <option>#f97316</option>
+    <option>#ea580c</option>
+    <option>#c2410c</option>
+
+    <option>#fde047</option>
+    <option>#facc15</option>
+    <option>#eab308</option>
+    <option>#ca8a04</option>
+    <option>#a16207</option>
+
+    <option>#86efac</option>
+    <option>#4ade80</option>
+    <option>#22c55e</option>
+    <option>#16a34a</option>
+    <option>#15803d</option>
+
+    <option>#7dd3fc</option>
+    <option>#38bdf8</option>
+    <option>#0ea5e9</option>
+    <option>#0284c7</option>
+    <option>#0369a1</option>
+
+    <option>#93c5fd</option>
+    <option>#60a5fa</option>
+    <option>#3b82f6</option>
+    <option>#2563eb</option>
+    <option>#1d4ed8</option>
+
+    <option>#d8b4fe</option>
+    <option>#c084fc</option>
+    <option>#a855f7</option>
+    <option>#9333ea</option>
+    <option>#7e22ce</option>
+  </datalist>
+}
