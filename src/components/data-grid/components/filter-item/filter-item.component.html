@@ -6,7 +6,7 @@
       [style]="`anchor-name: --${header.id}`"
     >
       <button class="btn btn-primary btn-xs btn-soft join-item">
-        {{ header.id | translate }}
+        {{ header.column.columnDef.header }}
       </button>
       <span class="btn btn-xs btn-primary join-item">
         {{ value().join(', ') }}
@@ -24,7 +24,7 @@
       (toggle)="onPopoverToggle($event)"
     >
       <header class="flex justify-between items-center">
-        <span class="text-xs">{{ header.id | translate }}</span>
+        <span class="text-xs"> {{ header.column.columnDef.header }}</span>
         <button
           [attr.popovertarget]="`${header.id}-popover-submenu`"
           class="btn btn-ghost btn-xs btn-square"
