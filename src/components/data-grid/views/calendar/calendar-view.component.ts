@@ -6,12 +6,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import {
-  Calendar,
-  CalendarOptions,
-  EventInput,
-  EventSourceInput,
-} from '@fullcalendar/core';
+import { Calendar, CalendarOptions, EventInput } from '@fullcalendar/core';
 import koLocale from '@fullcalendar/core/locales/ko';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -40,7 +35,7 @@ export class CalendarViewComponent {
     const titleField = this.store.options().titleField;
     if (!startDateField || !endDateField || !titleField) return [];
 
-    const events = this.store.rowData().map((row) => {
+    const events = this.store.rowData().map(row => {
       return {
         id: row.id,
         allDay: true,
@@ -66,15 +61,15 @@ export class CalendarViewComponent {
       center: 'title',
       right: 'dayGridMonth,listWeek',
     },
-    eventClick: (info) => {
-      const data = this.store.rowData().find((row) => row.id === info.event.id);
+    eventClick: info => {
+      const data = this.store.rowData().find(row => row.id === info.event.id);
       if (data) {
         this.store.onDetailClick?.(data);
       }
     },
-    eventDrop: (info) => {
+    eventDrop: info => {
       console.log(info.event);
-      const data = this.store.rowData().find((row) => row.id === info.event.id);
+      const data = this.store.rowData().find(row => row.id === info.event.id);
       if (data) {
         const startDateField = this.store.options().startDateField;
         const endDateField = this.store.options().endDateField;
@@ -87,8 +82,8 @@ export class CalendarViewComponent {
         this.store.onCellEdit?.(newData);
       }
     },
-    eventResize: (info) => {
-      const data = this.store.rowData().find((row) => row.id === info.event.id);
+    eventResize: info => {
+      const data = this.store.rowData().find(row => row.id === info.event.id);
       if (data) {
         const startDateField = this.store.options().startDateField;
         const endDateField = this.store.options().endDateField;

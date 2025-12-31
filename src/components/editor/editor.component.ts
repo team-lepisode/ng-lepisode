@@ -15,7 +15,12 @@ import { FormsModule } from '@angular/forms';
 import { FormValueControl } from '@angular/forms/signals';
 import { Editor } from '@tiptap/core';
 import { DragHandle } from '@tiptap/extension-drag-handle';
+import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
+import Subscript from '@tiptap/extension-subscript';
+import Superscript from '@tiptap/extension-superscript';
+import { TableKit } from '@tiptap/extension-table';
+import TextAlign from '@tiptap/extension-text-align';
 import { FontSize, TextStyleKit } from '@tiptap/extension-text-style';
 import { Focus } from '@tiptap/extensions';
 import { Markdown } from '@tiptap/markdown';
@@ -23,18 +28,13 @@ import StarterKit from '@tiptap/starter-kit';
 import { TiptapEditorDirective } from 'ngx-tiptap';
 import { Node } from 'prosemirror-model';
 import { Transaction } from 'prosemirror-state';
-import { TableKit } from '@tiptap/extension-table';
-import TextAlign from '@tiptap/extension-text-align';
 import {
   NG_LEPISODE_CONFIG,
   NgLepisodeConfig,
 } from '../../libs/provideNgLepisode';
-import Highlight from '@tiptap/extension-highlight';
-import Subscript from '@tiptap/extension-subscript';
-import Superscript from '@tiptap/extension-superscript';
 
 @Component({
-  selector: 'app-editor',
+  selector: 'lepi-editor',
   standalone: true,
   imports: [CommonModule, FormsModule, CdkMenuModule, TiptapEditorDirective],
   templateUrl: './editor.component.html',
@@ -164,7 +164,7 @@ export class EditorComponent implements FormValueControl<string> {
               'icon-[mdi--dots-vertical]',
               'cursor-move',
               'size-4',
-              'mr-2',
+              'mr-2'
             );
             return handle;
           },
@@ -197,7 +197,7 @@ export class EditorComponent implements FormValueControl<string> {
     a.type = 'file';
     a.accept = 'image/*';
     a.click();
-    a.onchange = (e) => {
+    a.onchange = e => {
       const file = (e.target as any)?.files[0];
 
       if (!file) {
@@ -206,12 +206,12 @@ export class EditorComponent implements FormValueControl<string> {
 
       this.uploadService
         .upload(file)
-        .then((uploadedFile) => {
+        .then(uploadedFile => {
           this.editor?.commands.setImage({
             src: uploadedFile.url,
           });
         })
-        .catch((err) => {
+        .catch(err => {
           console.error('Image upload failed', err);
         });
     };
@@ -219,13 +219,13 @@ export class EditorComponent implements FormValueControl<string> {
 
   handleImageDelete(transaction: Transaction) {
     const current: Node[] = [];
-    transaction.doc.content.forEach((node) => {
+    transaction.doc.content.forEach(node => {
       if (node.type.name == 'image') {
         current.push(node);
       }
     });
     const before: Node[] = [];
-    transaction.before.content.forEach((node) => {
+    transaction.before.content.forEach(node => {
       if (node.type.name == 'image') {
         before.push(node);
       }
@@ -234,13 +234,13 @@ export class EditorComponent implements FormValueControl<string> {
       return;
     }
 
-    const deletedImageNodes = before.filter((node) => {
+    const deletedImageNodes = before.filter(node => {
       const src = node.attrs['src'];
-      return !current.find((curNode) => curNode.attrs['src'] == src);
+      return !current.find(curNode => curNode.attrs['src'] == src);
     });
 
     if (deletedImageNodes.length > 0) {
-      deletedImageNodes.forEach(async (node) => {
+      deletedImageNodes.forEach(async node => {
         // await this.uploadService.delete(node.attrs['src']);
       });
     }

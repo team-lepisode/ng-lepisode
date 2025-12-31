@@ -7,14 +7,14 @@ import {
   output,
   untracked,
 } from '@angular/core';
-import { DataGridColumnTypes } from '../../data-grid.type';
+import { FormsModule } from '@angular/forms';
 import {
   NgLabelTemplateDirective,
   NgOptionTemplateDirective,
   NgSelectComponent,
 } from '@ng-select/ng-select';
 import { TranslatePipe } from '@ngx-translate/core';
-import { FormsModule } from '@angular/forms';
+import { DataGridColumnTypes } from '../../data-grid.type';
 
 @Component({
   selector: 'app-array-editable-cell',
