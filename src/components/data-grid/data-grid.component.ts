@@ -97,7 +97,6 @@ export class DataGridComponent {
     };
 
     this.store.onDetailClick = (row: any) => {
-      console.log(row);
       this.onDetailClick.emit(row);
     };
   }
