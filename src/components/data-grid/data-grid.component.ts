@@ -26,6 +26,7 @@ import {
 import { CalendarViewComponent } from './views/calendar/calendar-view.component';
 import { GalleryViewComponent } from './views/gallery/gallery-view.component';
 import { TableViewComponent } from './views/table/table-view.component';
+import { DataGridIcons } from './libs/icons';
 
 @Component({
   selector: 'lepi-data-grid',
@@ -128,18 +129,9 @@ export class DataGridComponent {
       return meta.icon;
     }
 
-    const icons: Record<DataGridColumnTypes, string> = {
-      text: 'icon-[tabler--letters-case]',
-      number: 'icon-[tabler--hash]',
-      rowNumber: 'icon-[tabler--hash]',
-      date: 'icon-[tabler--calendar]',
-      boolean: 'icon-[tabler--toggle-left]',
-      array: 'icon-[tabler--list]',
-      list: 'icon-[tabler--list-check]',
-    };
-
     return (
-      icons[(meta?.type as DataGridColumnTypes) ?? 'text'] ?? icons['text']
+      DataGridIcons[(meta?.type as DataGridColumnTypes) ?? 'text'] ??
+      DataGridIcons['text']
     );
   }
 

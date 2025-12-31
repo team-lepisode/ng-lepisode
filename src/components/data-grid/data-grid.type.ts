@@ -96,19 +96,25 @@ export type DataGridOptions = {
 export type DataGridColumnTypes =
   | 'rowNumber'
   | 'text'
+  | 'textarea'
   | 'date'
+  | 'datetime'
   | 'number'
   | 'boolean'
   | 'array'
-  | 'list';
+  | 'list'
+  | 'file';
 
 export type DataGridColumnDef =
   | DataGridTextColumnDef
+  | DataGridTextareaColumnDef
   | DataGridDateColumnDef
+  | DataGridDateTimeColumnDef
   | DataGridNumberColumnDef
   | DataGridBooleanColumnDef
   | DataGridArrayColumnDef
   | DataGridListColumnDef
+  | DataGridFileColumnDef
   | DataGridRowNumberColumnDef;
 
 type DataGridCommonColumnDef = {
@@ -133,6 +139,26 @@ export type DataGridTextColumnDef = DataGridCommonColumnDef & {
   editable?: boolean;
   maxLength?: number;
   placeholder?: string;
+};
+
+export type DataGridTextareaColumnDef = DataGridCommonColumnDef & {
+  type?: 'textarea';
+  field: string | (() => string);
+  editable?: boolean;
+  maxLength?: number;
+  placeholder?: string;
+};
+
+export type DataGridDateTimeColumnDef = DataGridCommonColumnDef & {
+  type: 'datetime';
+  field: string | (() => string);
+  dateFormat?: string;
+  editable?:
+    | {
+        maxDate?: Date;
+        minDate?: Date;
+      }
+    | boolean;
 };
 
 export type DataGridDateColumnDef = DataGridCommonColumnDef & {
@@ -180,6 +206,12 @@ export type DataGridArrayColumnDef = DataGridCommonColumnDef & {
         allowAdditions?: boolean;
       }
     | boolean;
+};
+
+export type DataGridFileColumnDef = DataGridCommonColumnDef & {
+  type: 'file';
+  field: string | (() => string);
+  editable?: boolean;
 };
 
 export type DataGridRowNumberColumnDef = DataGridCommonColumnDef & {

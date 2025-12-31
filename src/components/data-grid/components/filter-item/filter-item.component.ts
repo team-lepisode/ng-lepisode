@@ -69,9 +69,12 @@ export class DataGridFilterItemComponent {
     text: ['includesString', 'equalsString'],
     number: ['equals', 'inNumberRange'],
     date: ['equals', 'inDateRange'],
+    datetime: ['equals', 'inDateRange'],
     list: ['arrIncludes', 'arrIncludesAll', 'arrIncludesSome'],
     array: ['arrIncludes', 'arrIncludesAll', 'arrIncludesSome'],
     boolean: ['equals'],
+    file: ['equals'],
+    textarea: ['includesString', 'equalsString'],
   };
 
   filterFunctions = computed(() => {

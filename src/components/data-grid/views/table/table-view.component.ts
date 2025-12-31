@@ -8,6 +8,7 @@ import { DataGridColumnTypes } from '../../data-grid.type';
 import { TableResizableCell } from '../../directives/data-grid-resizable-cell.directive';
 import { TableResizableHeader } from '../../directives/data-grid-resizable-header.directive';
 import { SanitizeHtmlPipe } from '../../../../pipes/sanitize-html/sanitize-html.pipe';
+import { DataGridIcons } from '../../libs/icons';
 
 @Component({
   templateUrl: './table-view.component.html',
@@ -32,18 +33,9 @@ export class TableViewComponent {
       return meta.icon;
     }
 
-    const icons: Record<DataGridColumnTypes, string> = {
-      text: 'icon-[tabler--letters-case]',
-      number: 'icon-[tabler--hash]',
-      rowNumber: 'icon-[tabler--hash]',
-      date: 'icon-[tabler--calendar]',
-      boolean: 'icon-[tabler--toggle-left]',
-      array: 'icon-[tabler--list]',
-      list: 'icon-[tabler--list-check]',
-    };
-
     return (
-      icons[(meta?.type as DataGridColumnTypes) ?? 'text'] ?? icons['text']
+      DataGridIcons[(meta?.type as DataGridColumnTypes) ?? 'text'] ??
+      DataGridIcons['text']
     );
   }
 }
