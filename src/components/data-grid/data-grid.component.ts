@@ -23,10 +23,10 @@ import {
   DataGridColumnTypes,
   DataGridOptions,
 } from './data-grid.type';
+import { DataGridIcons } from './libs/icons';
 import { CalendarViewComponent } from './views/calendar/calendar-view.component';
 import { GalleryViewComponent } from './views/gallery/gallery-view.component';
 import { TableViewComponent } from './views/table/table-view.component';
-import { DataGridIcons } from './libs/icons';
 
 @Component({
   selector: 'lepi-data-grid',
@@ -108,11 +108,11 @@ export class DataGridComponent {
 
   goNextPage() {
     const max = this.store.table.getPageCount();
-    this.store.pageIndex.update((idx) => (idx + 1 < max ? idx + 1 : idx));
+    this.store.pageIndex.update(idx => (idx + 1 < max ? idx + 1 : idx));
   }
 
   goPreviousPage() {
-    this.store.pageIndex.update((idx) => (idx - 1 >= 0 ? idx - 1 : idx));
+    this.store.pageIndex.update(idx => (idx - 1 >= 0 ? idx - 1 : idx));
   }
 
   goFirstPage() {
