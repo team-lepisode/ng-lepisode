@@ -2,12 +2,12 @@
 import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FlexRender, Header } from '@tanstack/angular-table';
+import { SanitizeHtmlPipe } from '../../../../pipes/sanitize-html/sanitize-html.pipe';
 import { HeaderMenuComponent } from '../../components/header-menu/header-menu.component';
 import { DataGridComponentStore } from '../../data-grid.component.store';
 import { DataGridColumnTypes } from '../../data-grid.type';
 import { TableResizableCell } from '../../directives/data-grid-resizable-cell.directive';
 import { TableResizableHeader } from '../../directives/data-grid-resizable-header.directive';
-import { SanitizeHtmlPipe } from '../../../../pipes/sanitize-html/sanitize-html.pipe';
 import { DataGridIcons } from '../../libs/icons';
 
 @Component({
@@ -37,5 +37,13 @@ export class TableViewComponent {
       DataGridIcons[(meta?.type as DataGridColumnTypes) ?? 'text'] ??
       DataGridIcons['text']
     );
+  }
+
+  onDetailClick(row: any) {
+    this.store.onDetailClick?.(row);
+  }
+
+  onRowClick(row: any) {
+    this.store.onRowClick?.(row);
   }
 }

@@ -47,6 +47,7 @@ export class DataGridComponent {
 
   onCellEdit = output<any>();
   onDetailClick = output<any>();
+  onRowClick = output<any>();
 
   view = input<'table' | 'gallery' | 'calendar'>('table');
   rowData = input<any[] | undefined>([]);
@@ -97,8 +98,11 @@ export class DataGridComponent {
     };
 
     this.store.onDetailClick = (row: any) => {
-      console.log(row);
       this.onDetailClick.emit(row);
+    };
+
+    this.store.onRowClick = (row: any) => {
+      this.onRowClick.emit(row);
     };
   }
 

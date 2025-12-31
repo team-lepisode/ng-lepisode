@@ -31,17 +31,21 @@ export class DataGridComponentStore {
   // Options (synced from component)
   options = signal<DataGridOptions>({});
 
-  // Cell edit callback
+  // Callbacks
   onCellEdit: ((editedRow: any) => void) | null = null;
   onDetailClick: ((row: any) => void) | null = null;
+  onRowClick: ((row: any) => void) | null = null;
+
+  // Computed for UI state
+  isRowClickable = computed(() => this.onRowClick !== null);
 
   // Table instance
   table: Table<any> = createAngularTable(() => ({
     data: this.rowData() ?? [],
-    columns: this.columns()?.map((col) =>
+    columns: this.columns()?.map(col =>
       parseColumn(col, (editedRow: any) => {
         this.onCellEdit?.(editedRow);
-      }),
+      })
     ),
     columnResizeMode: 'onChange',
     getCoreRowModel: getCoreRowModel(),
@@ -59,12 +63,12 @@ export class DataGridComponentStore {
       columnFilters: this.columnFilters(),
       columnSizing: this.columnSizingState(),
     },
-    onSortingChange: (updater) => {
+    onSortingChange: updater => {
       const newSorting =
         typeof updater === 'function' ? updater(this.sorting()) : updater;
       this.sorting.set(newSorting);
     },
-    onColumnFiltersChange: (updater) => {
+    onColumnFiltersChange: updater => {
       const currentFilters = this.columnFilters();
       const newFilters =
         typeof updater === 'function' ? updater(currentFilters) : updater;
@@ -72,15 +76,15 @@ export class DataGridComponentStore {
       // TanStack Table tends to remove filters with empty values.
       // We want to keep them if they were already present.
       const mergedFilters = [...newFilters];
-      currentFilters.forEach((current) => {
-        if (!mergedFilters.find((f) => f.id === current.id)) {
+      currentFilters.forEach(current => {
+        if (!mergedFilters.find(f => f.id === current.id)) {
           mergedFilters.push({ ...current, value: '' });
         }
       });
 
       this.columnFilters.set(mergedFilters);
     },
-    onColumnSizingChange: (updater) => {
+    onColumnSizingChange: updater => {
       const newSizing =
         typeof updater === 'function'
           ? updater(this.columnSizingState())
@@ -97,22 +101,22 @@ export class DataGridComponentStore {
   endDateField = computed(() => this.options().endDateField ?? null);
   badgeField = computed(() => this.options().badgeField ?? null);
   galleryDisabled = computed(
-    () => this.titleField() === null || this.descriptionField() === null,
+    () => this.titleField() === null || this.descriptionField() === null
   );
   calendarDisabled = computed(
     () =>
       this.startDateField() === null ||
       this.endDateField() === null ||
-      this.titleField() === null,
+      this.titleField() === null
   );
 
   filterableColumns = computed(() =>
-    this.table.getAllColumns().filter((col) => col.getCanFilter()),
+    this.table.getAllColumns().filter(col => col.getCanFilter())
   );
 
   // Computed properties for column sizing
   readonly columnSizingInfo = computed(
-    () => this.table?.getState().columnSizingInfo,
+    () => this.table?.getState().columnSizingInfo
   );
   readonly columnSizing = computed(() => this.table?.getState().columnSizing);
 
@@ -135,8 +139,8 @@ export class DataGridComponentStore {
   });
 
   addFilter(id: string, value: any = '') {
-    this.columnFilters.update((filters) => {
-      const existingFilter = filters.find((f) => f.id === id);
+    this.columnFilters.update(filters => {
+      const existingFilter = filters.find(f => f.id === id);
       if (existingFilter) {
         return filters;
       }
@@ -146,18 +150,18 @@ export class DataGridComponentStore {
   }
 
   setFilterValue(id: string, value: any) {
-    this.columnFilters.update((filters) => {
-      const existingFilter = filters.find((f) => f.id === id);
+    this.columnFilters.update(filters => {
+      const existingFilter = filters.find(f => f.id === id);
       if (existingFilter) {
-        return filters.map((f) => (f.id === id ? { ...f, value } : f));
+        return filters.map(f => (f.id === id ? { ...f, value } : f));
       }
       return [...filters, { id, value }];
     });
   }
 
   removeFilter(id: string) {
-    this.columnFilters.update((filters) => {
-      return filters.filter((f) => f.id !== id);
+    this.columnFilters.update(filters => {
+      return filters.filter(f => f.id !== id);
     });
   }
 }
