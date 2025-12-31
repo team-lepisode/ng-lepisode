@@ -12,7 +12,7 @@ import { provideNgLepisode } from '@ng-lepisode';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideNgLepisode({
-      uploadService: new FileUploadService(),
+      uploadService: FileUploadService,
     }),
   ],
 };
