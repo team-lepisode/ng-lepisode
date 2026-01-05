@@ -1,0 +1,16 @@
+/**
+ * Interactives Module
+ *
+ * 다른 프로젝트에서 쉽게 재사용 가능한 인터랙티브 컴포넌트 모음입니다.
+ *
+ * @example
+ * ```typescript
+ * import { CountUpDirective, SuccessOverlayService, CheckmarkComponent } from '@ocr/client-libs';
+ * ```
+ */
+
+// Count Up Animation
+export * from "./count-up";
+
+// Success Overlay
+export * from "./success-overlay";

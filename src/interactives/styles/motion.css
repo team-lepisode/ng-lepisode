@@ -1,0 +1,74 @@
+@theme {
+  /* Emphasized: 대부분의 전환에 사용 */
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Emphasized Decelerate: 요소가 화면에 진입할 때 */
+  --ease-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+
+  /* Emphasized Accelerate: 요소가 화면에서 퇴장할 때 */
+  --ease-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+
+  /* Standard: 작은 UI 요소의 상태 변화 */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Short: 간단한 피드백 (탭, 호버) */
+  --duration-short: 200ms;
+
+  /* Medium: 일반적인 전환 */
+  --duration-medium: 300ms;
+
+  /* Long: 복잡한 전환, 페이지 이동 */
+  --duration-long: 500ms;
+
+  /* Extra Long: 특별한 강조 애니메이션 */
+  --duration-extra-long: 700ms;
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 oklch(from var(--color-primary) l c h / 0.5),
+      0 0 0 0 oklch(from var(--color-primary) l c h / 0.3),
+      0 0 0 0 oklch(from var(--color-primary) l c h / 0.1);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 10px oklch(from var(--color-primary) l c h / 0),
+      0 0 0 20px oklch(from var(--color-primary) l c h / 0),
+      0 0 0 35px oklch(from var(--color-primary) l c h / 0);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 0 0 oklch(from var(--color-primary) l c h / 0),
+      0 0 0 0 oklch(from var(--color-primary) l c h / 0),
+      0 0 0 0 oklch(from var(--color-primary) l c h / 0);
+    transform: scale(1);
+  }
+}
+
+/* 강력한 펄스 효과 - 주요 유도 버튼 (Multi-layer Ripple) */
+.btn-pulse-prime {
+  animation: pulse-glow 2s var(--ease-emphasized) infinite;
+  @apply relative;
+}
+
+/* 페이드 인 */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 슬라이드 업 (진입) */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

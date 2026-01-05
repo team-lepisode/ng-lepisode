@@ -1,0 +1,42 @@
+:host {
+  display: inline-flex;
+  align-items: baseline;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.count-up-container {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.digit-column {
+  display: inline-block;
+  position: relative;
+  height: 1.2em; /* Ensure enough height for the digits */
+  overflow: hidden;
+  width: 0.6em; /* Fixed width for tabular-nums feel */
+  text-align: center;
+}
+
+.digit-strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--duration, 800ms) cubic-bezier(0.2, 0, 0, 1);
+  will-change: transform;
+}
+
+.digit-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.2em;
+  width: 100%;
+}
+
+.separator,
+.prefix,
+.suffix {
+  display: inline-block;
+}
