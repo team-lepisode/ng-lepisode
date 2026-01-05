@@ -6,9 +6,9 @@
   (dragleave)="onDragLeave($event)"
   (drop)="onDrop($event)">
   <!-- 업로드된 파일 미리보기 -->
-  @if (value().length > 0) {
-    <div class="file-list" [class.image-grid]="isImageMode()">
-      @for (url of value(); track url; let i = $index) {
+  @if (normalizedValue().length > 0) {
+    <div class="file-list" [class.image-grid]="isImageMode()" [class.single-mode]="isSingleMode()">
+      @for (url of normalizedValue(); track url; let i = $index) {
         <div class="file-item" [class.image-item]="isImageMode()">
           @if (isImageMode()) {
             <img [src]="url" alt="Uploaded image" class="image-preview" />

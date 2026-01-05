@@ -131,7 +131,8 @@ type DataGridCommonColumnDef = {
 
   filterable?: boolean;
   headerIconClass?: string;
-  formatter?: (cell: CellContext<any, unknown>) => string;
+  width?: number;
+  formatter?: (value: any, cell: CellContext<any, unknown>) => string;
   component?: ComponentType<any>;
 };
 

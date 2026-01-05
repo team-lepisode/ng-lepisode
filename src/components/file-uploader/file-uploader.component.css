@@ -23,6 +23,15 @@
   gap: 0.75rem;
 }
 
+.file-list.single-mode.image-grid {
+  grid-template-columns: 1fr;
+}
+
+.file-list.single-mode .file-item.image-item {
+  aspect-ratio: auto;
+  max-height: 300px;
+}
+
 /* 파일 아이템 */
 .file-item {
   position: relative;

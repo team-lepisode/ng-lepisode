@@ -23,6 +23,14 @@ export const parseEditableColumn = (
       type: column.type ?? 'text',
       detail: column.detail ?? false,
     },
+    size: column.width,
+    minSize:
+      (
+        column.header ??
+        (typeof column.field === 'function' ? column.field() : column.field)
+      ).length *
+        12 +
+      60,
   };
 
   if (column.editable === false)

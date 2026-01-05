@@ -20,6 +20,14 @@ export const parseNonEditableColumn = (
       type: column.type ?? 'text',
       detail: column.detail ?? false,
     },
+    size: column.width,
+    minSize:
+      (
+        column.header ??
+        (typeof column.field === 'function' ? column.field() : column.field)
+      ).length *
+        12 +
+      60,
   };
 
   if (column.type === 'date') {
@@ -72,7 +80,11 @@ export const parseNonEditableColumn = (
   if (column.type === 'badge') {
     const badgeColumn = column as DataGridBadgeColumnDef;
     columnDef.cell = cell => {
-      const value = cell.getValue() as string;
+      let value = cell.getValue() as any;
+      if (column.formatter) {
+        value = column.formatter(value, cell);
+      }
+
       if (!value) return '';
 
       const colorMap = badgeColumn.badgeConfig?.colorMap ?? {};

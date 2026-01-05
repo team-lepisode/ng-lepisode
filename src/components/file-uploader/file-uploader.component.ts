@@ -21,7 +21,9 @@ import {
   templateUrl: './file-uploader.component.html',
   styleUrls: ['./file-uploader.component.css'],
 })
-export class FileUploaderComponent implements FormValueControl<string[]> {
+export class FileUploaderComponent
+  implements FormValueControl<string | string[]>
+{
   private readonly config = inject<NgLepisodeConfig>(NG_LEPISODE_CONFIG);
   private readonly uploadService = this.config.uploadService;
 
@@ -32,7 +34,7 @@ export class FileUploaderComponent implements FormValueControl<string[]> {
   maxFiles = input<number>(10);
 
   /** 업로드된 파일 URL 배열 */
-  value = model<string[]>([]);
+  value = model<string | string[]>([]);
 
   /** 드래그 오버 상태 */
   isDragOver = signal(false);
@@ -40,11 +42,23 @@ export class FileUploaderComponent implements FormValueControl<string[]> {
   /** 업로드 중 상태 */
   isUploading = signal(false);
 
+  /** 내부 처리를 위한 정규화된 파일 URL 배열 */
+  normalizedValue = computed(() => {
+    const val = this.value();
+    if (Array.isArray(val)) return val;
+    return val ? [val] : [];
+  });
+
+  /** 단일 파일 모드 여부 */
+  isSingleMode = computed(() => this.maxFiles() === 1);
+
   /** 이미지 타입 여부 */
   isImageMode = computed(() => this.accept().includes('image'));
 
   /** 파일 개수 제한 도달 여부 */
-  isMaxReached = computed(() => this.value().length >= this.maxFiles());
+  isMaxReached = computed(
+    () => this.normalizedValue().length >= this.maxFiles()
+  );
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -82,7 +96,7 @@ export class FileUploaderComponent implements FormValueControl<string[]> {
   private async handleFiles(files: File[]) {
     if (this.isMaxReached()) return;
 
-    const remainingSlots = this.maxFiles() - this.value().length;
+    const remainingSlots = this.maxFiles() - this.normalizedValue().length;
     const filesToUpload = files.slice(0, remainingSlots);
 
     this.isUploading.set(true);
@@ -90,7 +104,14 @@ export class FileUploaderComponent implements FormValueControl<string[]> {
     try {
       for (const file of filesToUpload) {
         const result = await this.uploadService.upload(file);
-        this.value.update(urls => [...urls, result.url]);
+        if (this.maxFiles() === 1) {
+          this.value.set(result.url);
+        } else {
+          this.value.update(v => {
+            const urls = Array.isArray(v) ? v : v ? [v] : [];
+            return [...urls, result.url];
+          });
+        }
       }
     } catch (error) {
       console.error('File upload failed:', error);
@@ -100,7 +121,14 @@ export class FileUploaderComponent implements FormValueControl<string[]> {
   }
 
   removeFile(index: number) {
-    this.value.update(urls => urls.filter((_, i) => i !== index));
+    if (this.maxFiles() === 1) {
+      this.value.set('');
+    } else {
+      this.value.update(v => {
+        const urls = Array.isArray(v) ? v : v ? [v] : [];
+        return urls.filter((_, i) => i !== index);
+      });
+    }
   }
 
   getFileName(url: string): string {
