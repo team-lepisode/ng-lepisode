@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
-  ViewEncapsulation,
   booleanAttribute,
   inject,
   input,
@@ -39,7 +38,6 @@ import {
   imports: [CommonModule, FormsModule, CdkMenuModule, TiptapEditorDirective],
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class EditorComponent implements FormValueControl<string> {
   private readonly config = inject<NgLepisodeConfig>(NG_LEPISODE_CONFIG);
