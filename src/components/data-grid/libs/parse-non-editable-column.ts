@@ -1,12 +1,13 @@
 import { ColumnDef } from '@tanstack/angular-table';
+import dayjs from 'dayjs';
 import {
+  DataGridBadgeColumnDef,
   DataGridColumnDef,
   DataGridRowNumberColumnDef,
 } from '../data-grid.type';
-import dayjs from 'dayjs';
 
 export const parseNonEditableColumn = (
-  column: Exclude<DataGridColumnDef, DataGridRowNumberColumnDef>,
+  column: Exclude<DataGridColumnDef, DataGridRowNumberColumnDef>
 ): ColumnDef<any, unknown> => {
   const columnDef: ColumnDef<any, unknown> = {
     header:
@@ -22,14 +23,14 @@ export const parseNonEditableColumn = (
   };
 
   if (column.type === 'date') {
-    columnDef.cell = (cell) => {
+    columnDef.cell = cell => {
       const value = cell.getValue();
       if (!value) {
         return '';
       }
 
       return dayjs(value as string).format(
-        column.dateFormat ?? 'YYYY-MM-DD HH:mm',
+        column.dateFormat ?? 'YYYY-MM-DD HH:mm'
       );
     };
   }
@@ -37,13 +38,13 @@ export const parseNonEditableColumn = (
   if (column.type === 'array') {
     columnDef.meta!.items = column.items;
 
-    columnDef.cell = (cell) => {
+    columnDef.cell = cell => {
       const value = cell.getValue() as string[]; // value1, value2
 
       const firstThree = value.slice(0, 3);
       if (value.length <= 3) {
         const badges = firstThree.map(
-          (v) => `<span class="badge badge-soft" data-value="${v}">${v}</span>`,
+          v => `<span class="badge badge-soft" data-value="${v}">${v}</span>`
         );
 
         return badges.join(' ');
@@ -52,7 +53,7 @@ export const parseNonEditableColumn = (
       const valueToShow = firstThree;
       valueToShow.push(`+${value.length - 3}`);
       const badges = valueToShow.map(
-        (v) => `<span class="badge badge-soft" data-value="${v}">${v}</span>`,
+        v => `<span class="badge badge-soft" data-value="${v}">${v}</span>`
       );
 
       return badges.join(' ');
@@ -61,10 +62,24 @@ export const parseNonEditableColumn = (
 
   if (column.type === 'list') {
     columnDef.meta!.items = column.items;
-    columnDef.cell = (cell) => {
+    columnDef.cell = cell => {
       const value = cell.getValue() as string;
 
       return `<span class="badge badge-soft" data-value="${value}">${value}</span>`;
+    };
+  }
+
+  if (column.type === 'badge') {
+    const badgeColumn = column as DataGridBadgeColumnDef;
+    columnDef.cell = cell => {
+      const value = cell.getValue() as string;
+      if (!value) return '';
+
+      const colorMap = badgeColumn.badgeConfig?.colorMap ?? {};
+      const defaultColor = badgeColumn.badgeConfig?.defaultColor ?? 'neutral';
+      const color = colorMap[value] ?? defaultColor;
+
+      return `<span class="badge badge-${color}">${value}</span>`;
     };
   }
 

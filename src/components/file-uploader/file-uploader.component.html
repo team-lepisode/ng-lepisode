@@ -1,0 +1,55 @@
+<div
+  class="file-uploader"
+  [class.drag-over]="isDragOver()"
+  [class.image-mode]="isImageMode()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)">
+  <!-- 업로드된 파일 미리보기 -->
+  @if (value().length > 0) {
+    <div class="file-list" [class.image-grid]="isImageMode()">
+      @for (url of value(); track url; let i = $index) {
+        <div class="file-item" [class.image-item]="isImageMode()">
+          @if (isImageMode()) {
+            <img [src]="url" alt="Uploaded image" class="image-preview" />
+          } @else {
+            <div class="file-info">
+              <span class="icon-[mdi--file-document-outline] text-2xl text-base-content/60"></span>
+              <span class="file-name">{{ getFileName(url) }}</span>
+            </div>
+          }
+          <button type="button" class="btn btn-circle btn-xs btn-error remove-btn" (click)="removeFile(i)">
+            <span class="icon-[mdi--close] text-sm"></span>
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- 업로드 영역 -->
+  @if (!isMaxReached()) {
+    <label class="upload-area" [class.uploading]="isUploading()">
+      <input
+        type="file"
+        [accept]="accept()"
+        [multiple]="maxFiles() > 1"
+        (change)="onFileSelect($event)"
+        class="hidden" />
+
+      @if (isUploading()) {
+        <span class="loading loading-spinner loading-md"></span>
+        <span class="upload-text">업로드 중...</span>
+      } @else {
+        <span class="icon-[mdi--cloud-upload-outline] text-4xl text-base-content/40"></span>
+        <span class="upload-text">파일을 드래그하거나 클릭하여 선택하세요</span>
+        <span class="upload-hint">
+          @if (isImageMode()) {
+            이미지 파일만 허용 (최대 {{ maxFiles() }}개)
+          } @else {
+            최대 {{ maxFiles() }}개 파일
+          }
+        </span>
+      }
+    </label>
+  }
+</div>

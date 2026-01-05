@@ -103,7 +103,8 @@ export type DataGridColumnTypes =
   | 'boolean'
   | 'array'
   | 'list'
-  | 'file';
+  | 'file'
+  | 'badge';
 
 export type DataGridColumnDef =
   | DataGridTextColumnDef
@@ -115,7 +116,8 @@ export type DataGridColumnDef =
   | DataGridArrayColumnDef
   | DataGridListColumnDef
   | DataGridFileColumnDef
-  | DataGridRowNumberColumnDef;
+  | DataGridRowNumberColumnDef
+  | DataGridBadgeColumnDef;
 
 type DataGridCommonColumnDef = {
   /** 헤더에 표시할 텍스트 */
@@ -216,4 +218,26 @@ export type DataGridFileColumnDef = DataGridCommonColumnDef & {
 
 export type DataGridRowNumberColumnDef = DataGridCommonColumnDef & {
   type: 'rowNumber';
+};
+
+export type BadgeColor =
+  | 'primary'
+  | 'secondary'
+  | 'accent'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'neutral';
+
+export type DataGridBadgeColumnDef = DataGridCommonColumnDef & {
+  type: 'badge';
+  field: string | (() => string);
+  badgeConfig?: {
+    /** 값에 따른 색상 매핑 */
+    colorMap?: Record<string, BadgeColor>;
+    /** 기본 색상 (colorMap에 없는 값일 때) */
+    defaultColor?: BadgeColor;
+  };
+  editable?: boolean;
 };

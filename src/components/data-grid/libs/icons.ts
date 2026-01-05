@@ -11,4 +11,5 @@ export const DataGridIcons: Record<DataGridColumnTypes, string> = {
   array: 'icon-[tabler--list]',
   list: 'icon-[tabler--list-check]',
   file: 'icon-[tabler--file]',
+  badge: 'icon-[tabler--badge]',
 };

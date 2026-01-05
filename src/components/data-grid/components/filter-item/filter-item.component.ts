@@ -51,7 +51,7 @@ export class DataGridFilterItemComponent {
 
   id = computed(() => this.filter().id);
   header = computed(() =>
-    this.store.table.getFlatHeaders().find((header) => header.id === this.id()),
+    this.store.table.getFlatHeaders().find(header => header.id === this.id())
   );
 
   headerLabel = computed(() => this.header()?.getContext());
@@ -75,6 +75,7 @@ export class DataGridFilterItemComponent {
     boolean: ['equals'],
     file: ['equals'],
     textarea: ['includesString', 'equalsString'],
+    badge: ['equals'],
   };
 
   filterFunctions = computed(() => {
@@ -109,11 +110,11 @@ export class DataGridFilterItemComponent {
   }
 
   setFilterFunction(
-    fn: (row: any, columnId: string, filterValue: any) => boolean,
+    fn: (row: any, columnId: string, filterValue: any) => boolean
   ) {
     const col = this.column();
     if (col) {
-      this.store.table.setColumnFilters((old) => [...old]);
+      this.store.table.setColumnFilters(old => [...old]);
       col.columnDef.filterFn = fn as any;
     }
   }

@@ -1,16 +1,16 @@
 import { ColumnDef, flexRenderComponent } from '@tanstack/angular-table';
+import { ArrayEditableCellComponent } from '../components/array-editable-cell/array-editable-cell.component';
 import { DateEditableCellComponent } from '../components/date-editable-cell/date-editable-cell.component';
+import { ListEditableCellComponent } from '../components/list-editable-cell/list-editable-cell.component';
 import { TextEditableCellComponent } from '../components/text-editable-cell/text-editable-cell.component';
 import {
   DataGridColumnDef,
   DataGridRowNumberColumnDef,
 } from '../data-grid.type';
-import { ArrayEditableCellComponent } from '../components/array-editable-cell/array-editable-cell.component';
-import { ListEditableCellComponent } from '../components/list-editable-cell/list-editable-cell.component';
 
 export const parseEditableColumn = (
   column: Exclude<DataGridColumnDef, DataGridRowNumberColumnDef>,
-  onCellEdit: (edited: any) => void,
+  onCellEdit: (edited: any) => void
 ): ColumnDef<any, unknown> => {
   const columnDef: ColumnDef<any, unknown> = {
     header:
@@ -30,7 +30,7 @@ export const parseEditableColumn = (
 
   if (column.component) {
     const component = column.component;
-    columnDef.cell = (cell) => {
+    columnDef.cell = cell => {
       const value = cell.getValue();
       return flexRenderComponent(component, {
         inputs: { value },
@@ -66,7 +66,7 @@ export const parseEditableColumn = (
       component = DateEditableCellComponent;
     }
 
-    columnDef.cell = (cell) => {
+    columnDef.cell = cell => {
       const value = cell.getValue();
       return flexRenderComponent(component, {
         inputs: { value, type: column.type },
@@ -86,7 +86,7 @@ export const parseEditableColumn = (
   }
 
   if (column.type === 'list') {
-    columnDef.cell = (cell) => {
+    columnDef.cell = cell => {
       const value = cell.getValue();
       return flexRenderComponent(ListEditableCellComponent, {
         inputs: {
@@ -112,7 +112,7 @@ export const parseEditableColumn = (
   if (column.type === 'array') {
     const allowAdditions = !!(editableOpts as any).allowAdditions;
 
-    columnDef.cell = (cell) => {
+    columnDef.cell = cell => {
       const value = cell.getValue();
       return flexRenderComponent(ArrayEditableCellComponent, {
         inputs: {
