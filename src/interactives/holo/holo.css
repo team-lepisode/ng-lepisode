@@ -1,0 +1,13 @@
+/* 3D 깊이감을 위한 스타일 */
+.perspective-container {
+  perspective: 2000px; /* 원근감 강도 (숫자가 작을수록 왜곡이 심함) */
+}
+.card-root {
+  transform-style: preserve-3d; /* 자식 요소도 3D 공간에 배치 */
+}
+.translate-z-20 {
+  transform: translateZ(30px);
+}
+.translate-z-30 {
+  transform: translateZ(50px);
+}

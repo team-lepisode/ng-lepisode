@@ -1,0 +1,57 @@
+<div
+  #track
+  class="relative w-full h-14 rounded-full bg-base-300 overflow-hidden select-none shadow-inner border border-base-content/5 touch-none"
+  [class.bg-primary]="isConfirmed()"
+  [class.transition-colors]="isConfirmed()"
+  [class.duration-500]="isConfirmed()">
+  <div
+    class="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300"
+    [class.opacity-0]="isDragging() || isConfirmed()">
+    <span
+      class="text-sm font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-base-content/20 via-base-content/60 to-base-content/20 animate-shimmer">
+      {{ label() }}
+    </span>
+  </div>
+
+  <div
+    class="absolute inset-0 flex items-center justify-center text-white font-bold tracking-widest opacity-0 transition-opacity duration-300 pointer-events-none"
+    [class.opacity-100]="isConfirmed()">
+    {{ successLabel() }}
+  </div>
+
+  <div
+    class="absolute left-0 top-0 bottom-0 bg-primary/20 pointer-events-none"
+    [style.width.px]="currentX() + handleWidth() / 2"
+    [class.transition-all]="!isDragging()"
+    [class.duration-300]="!isDragging()"></div>
+
+  <div
+    #handle
+    class="absolute top-1 bottom-1 aspect-square rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)] cursor-grab active:cursor-grabbing flex items-center justify-center z-10 hover:scale-105 active:scale-95"
+    [style.transform]="'translateX(' + currentX() + 'px)'"
+    [class.transition-transform]="!isDragging()"
+    [class.duration-300]="!isDragging()"
+    (mousedown)="startDrag($event)"
+    (touchstart)="startDrag($event)">
+    @if (isConfirmed()) {
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 text-primary"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="3">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+    } @else {
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+      </svg>
+    }
+  </div>
+</div>

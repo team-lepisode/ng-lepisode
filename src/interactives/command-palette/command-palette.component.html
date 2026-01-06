@@ -1,0 +1,63 @@
+@if (isOpen()) {
+  <div
+    class="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-black/40 backdrop-blur-sm transition-opacity"
+    (click)="close()">
+    <div
+      class="w-full max-w-xl bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-scale-in"
+      (click)="$event.stopPropagation()">
+      <div class="flex items-center px-4 border-b border-gray-700">
+        <span class="text-gray-400 text-lg mr-3">🔍</span>
+        <input
+          #searchInput
+          type="text"
+          class="w-full bg-transparent border-none py-4 text-white text-lg placeholder-gray-500 focus:ring-0 focus:outline-none"
+          placeholder="Type a command or search..."
+          [(ngModel)]="query"
+          (keydown.arrowdown)="navigate(1, $event)"
+          (keydown.arrowup)="navigate(-1, $event)"
+          (keydown.enter)="execute()" />
+        <span class="text-xs text-gray-500 border border-gray-700 px-2 py-1 rounded">ESC</span>
+      </div>
+
+      <div class="max-h-[300px] overflow-y-auto p-2 scrollbar-hide">
+        @if (filteredItems().length === 0) {
+          <div class="p-8 text-center text-gray-500">No results found for "{{ query() }}"</div>
+        }
+
+        @for (group of groupedItems(); track group.category) {
+          <div class="mb-2">
+            <div class="px-3 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
+              {{ group.category }}
+            </div>
+
+            @for (item of group.items; track item.id) {
+              <button
+                class="w-full flex items-center justify-between px-3 py-3 rounded-lg text-left transition-colors group"
+                [class.bg-primary]="selectedIndex() === getGlobalIndex(item)"
+                [class.text-white]="selectedIndex() === getGlobalIndex(item)"
+                [class.text-gray-300]="selectedIndex() !== getGlobalIndex(item)"
+                [class.hover:bg-gray-800]="selectedIndex() !== getGlobalIndex(item)"
+                (click)="selectItem(item)"
+                (mouseenter)="setIndex(item)">
+                <div class="flex items-center gap-3">
+                  <span class="text-xl opacity-70">{{ item.icon }}</span>
+                  <span class="font-medium">{{ item.label }}</span>
+                </div>
+                @if (item.shortcut) {
+                  <span class="text-xs opacity-50 font-mono border border-white/20 px-1 rounded">
+                    {{ item.shortcut }}
+                  </span>
+                }
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="bg-gray-800/50 px-4 py-2 border-t border-gray-700 text-xs text-gray-500 flex justify-between">
+        <span>Navigation: <b class="text-gray-400">↑↓</b></span>
+        <span>Select: <b class="text-gray-400">Enter</b></span>
+      </div>
+    </div>
+  </div>
+}

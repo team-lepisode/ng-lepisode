@@ -1,0 +1,17 @@
+/* 텍스트 위로 빛이 지나가는 애니메이션 */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+/* 터치 스크롤 방지 (필수) */
+.touch-none {
+  touch-action: none;
+}
