@@ -1,7 +1,8 @@
-import { CdkMenuModule } from '@angular/cdk/menu';
-import { CommonModule } from '@angular/common';
+import { CdkMenuModule } from "@angular/cdk/menu";
+import { CommonModule } from "@angular/common";
 import {
   Component,
+  effect,
   ElementRef,
   ViewEncapsulation,
   booleanAttribute,
@@ -10,44 +11,44 @@ import {
   model,
   signal,
   viewChild,
-} from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { FormValueControl } from '@angular/forms/signals';
-import { Editor } from '@tiptap/core';
-import { DragHandle } from '@tiptap/extension-drag-handle';
-import Image from '@tiptap/extension-image';
-import { FontSize, TextStyleKit } from '@tiptap/extension-text-style';
-import { Focus } from '@tiptap/extensions';
-import { Markdown } from '@tiptap/markdown';
-import StarterKit from '@tiptap/starter-kit';
-import { TiptapEditorDirective } from 'ngx-tiptap';
-import { Node } from 'prosemirror-model';
-import { Transaction } from 'prosemirror-state';
-import { TableKit } from '@tiptap/extension-table';
-import TextAlign from '@tiptap/extension-text-align';
+} from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { FormValueControl } from "@angular/forms/signals";
+import { Editor } from "@tiptap/core";
+import { DragHandle } from "@tiptap/extension-drag-handle";
+import Image from "@tiptap/extension-image";
+import { FontSize, TextStyleKit } from "@tiptap/extension-text-style";
+import { Focus } from "@tiptap/extensions";
+import { Markdown } from "@tiptap/markdown";
+import StarterKit from "@tiptap/starter-kit";
+import { TiptapEditorDirective } from "ngx-tiptap";
+import { Node } from "prosemirror-model";
+import { Transaction } from "prosemirror-state";
+import { TableKit } from "@tiptap/extension-table";
+import TextAlign from "@tiptap/extension-text-align";
 import {
   NG_LEPISODE_CONFIG,
   NgLepisodeConfig,
-} from '../../libs/provideNgLepisode';
-import Highlight from '@tiptap/extension-highlight';
-import Subscript from '@tiptap/extension-subscript';
-import Superscript from '@tiptap/extension-superscript';
+} from "../../libs/provideNgLepisode";
+import Highlight from "@tiptap/extension-highlight";
+import Subscript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
 
 @Component({
-  selector: 'app-editor',
+  selector: "app-editor",
   standalone: true,
   imports: [CommonModule, FormsModule, CdkMenuModule, TiptapEditorDirective],
-  templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.css'],
+  templateUrl: "./editor.component.html",
+  styleUrls: ["./editor.component.css"],
   encapsulation: ViewEncapsulation.None,
 })
 export class EditorComponent implements FormValueControl<string> {
   private readonly config = inject<NgLepisodeConfig>(NG_LEPISODE_CONFIG);
   private readonly uploadService = this.config.uploadService;
 
-  highlightRef = viewChild.required<ElementRef<HTMLInputElement>>('highlight');
+  highlightRef = viewChild.required<ElementRef<HTMLInputElement>>("highlight");
 
-  format = input<'html' | 'json'>('html');
+  format = input<"html" | "json">("html");
   image = input<boolean, string | boolean>(true, {
     transform: booleanAttribute,
   });
@@ -55,7 +56,7 @@ export class EditorComponent implements FormValueControl<string> {
     transform: booleanAttribute,
   });
 
-  value = model<string>('');
+  value = model<string>("");
 
   editor: Editor | null = null;
 
@@ -118,6 +119,16 @@ export class EditorComponent implements FormValueControl<string> {
   //   },
   // });
 
+  constructor() {
+    // 외부에서 value 시그널 변경 시 에디터 업데이트
+    effect(() => {
+      const newValue = this.value();
+      if (this.editor && newValue !== this.editor.getMarkdown()) {
+        this.editor.commands.setContent(newValue);
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.setEditor();
   }
@@ -133,7 +144,7 @@ export class EditorComponent implements FormValueControl<string> {
           multicolor: true,
         }),
         TextAlign.configure({
-          types: ['paragraph', 'heading'],
+          types: ["paragraph", "heading"],
         }),
         Superscript,
         Subscript,
@@ -154,17 +165,17 @@ export class EditorComponent implements FormValueControl<string> {
           },
         }),
         Focus.configure({
-          className: 'border border-primary rounded-field',
-          mode: 'all',
+          className: "border border-primary rounded-field",
+          mode: "all",
         }),
         DragHandle.configure({
           render: () => {
-            const handle = document.createElement('span');
+            const handle = document.createElement("span");
             handle.classList.add(
-              'icon-[mdi--dots-vertical]',
-              'cursor-move',
-              'size-4',
-              'mr-2',
+              "icon-[mdi--dots-vertical]",
+              "cursor-move",
+              "size-4",
+              "mr-2"
             );
             return handle;
           },
@@ -172,14 +183,23 @@ export class EditorComponent implements FormValueControl<string> {
       ],
       editorProps: {
         attributes: {
-          spellcheck: 'false',
-          style: 'outline: none',
+          spellcheck: "false",
+          style: "outline: none",
         },
       },
       onUpdate: ({ editor }) => {
-        this.value.set(editor.getMarkdown());
+        const markdown = editor.getMarkdown();
+        if (this.value() !== markdown) {
+          this.value.set(markdown);
+        }
       },
     });
+
+    // 초기값 반영 (editor 인스턴스 생성 직후)
+    const initialValue = this.value();
+    if (initialValue) {
+      this.editor.commands.setContent(initialValue);
+    }
   }
 
   isCurrentNodeTable = signal<boolean>(false);
@@ -193,9 +213,9 @@ export class EditorComponent implements FormValueControl<string> {
   selectImage(event: Event) {
     event.stopPropagation();
     event.preventDefault();
-    const a = document.createElement('input');
-    a.type = 'file';
-    a.accept = 'image/*';
+    const a = document.createElement("input");
+    a.type = "file";
+    a.accept = "image/*";
     a.click();
     a.onchange = (e) => {
       const file = (e.target as any)?.files[0];
@@ -212,7 +232,7 @@ export class EditorComponent implements FormValueControl<string> {
           });
         })
         .catch((err) => {
-          console.error('Image upload failed', err);
+          console.error("Image upload failed", err);
         });
     };
   }
@@ -220,13 +240,13 @@ export class EditorComponent implements FormValueControl<string> {
   handleImageDelete(transaction: Transaction) {
     const current: Node[] = [];
     transaction.doc.content.forEach((node) => {
-      if (node.type.name == 'image') {
+      if (node.type.name == "image") {
         current.push(node);
       }
     });
     const before: Node[] = [];
     transaction.before.content.forEach((node) => {
-      if (node.type.name == 'image') {
+      if (node.type.name == "image") {
         before.push(node);
       }
     });
@@ -235,8 +255,8 @@ export class EditorComponent implements FormValueControl<string> {
     }
 
     const deletedImageNodes = before.filter((node) => {
-      const src = node.attrs['src'];
-      return !current.find((curNode) => curNode.attrs['src'] == src);
+      const src = node.attrs["src"];
+      return !current.find((curNode) => curNode.attrs["src"] == src);
     });
 
     if (deletedImageNodes.length > 0) {
