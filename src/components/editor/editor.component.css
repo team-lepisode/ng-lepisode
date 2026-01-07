@@ -107,8 +107,6 @@ button.editor-button.active {
 :host ::ng-deep .tiptap h3.editor-heading,
 :host ::ng-deep .tiptap h4.editor-heading {
   font-weight: 600;
-  margin-top: 1em;
-  margin-bottom: 0.5em;
   line-height: 1.25;
 }
 
