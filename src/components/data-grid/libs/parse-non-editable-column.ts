@@ -24,7 +24,7 @@ export const parseNonEditableColumn = (
     maxSize: column.maxSize ?? 500,
   };
 
-  if (column.type === 'date') {
+  if (column.type === 'date' || column.type === 'datetime') {
     columnDef.cell = (cell) => {
       const value = cell.getValue();
       if (!value) {
