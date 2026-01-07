@@ -13,7 +13,6 @@ import {
 import { FormsModule } from '@angular/forms';
 import { FormValueControl } from '@angular/forms/signals';
 import { Editor } from '@tiptap/core';
-import { DragHandle } from '@tiptap/extension-drag-handle';
 import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import Subscript from '@tiptap/extension-subscript';
@@ -154,18 +153,6 @@ export class EditorComponent implements FormValueControl<string> {
         Focus.configure({
           className: 'border border-primary rounded-field',
           mode: 'all',
-        }),
-        DragHandle.configure({
-          render: () => {
-            const handle = document.createElement('span');
-            handle.classList.add(
-              'icon-[mdi--dots-vertical]',
-              'cursor-move',
-              'size-4',
-              'mr-2'
-            );
-            return handle;
-          },
         }),
       ],
       editorProps: {
