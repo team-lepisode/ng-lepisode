@@ -12,29 +12,97 @@ tbody {
   overflow-y: auto;
 }
 
-tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-  border-bottom: 1px solid var(--color-base-200);
+/* ========== Header Styles ========== */
+.thead {
+  background-color: var(--color-base-200);
+  border-bottom: 1px solid
+    color-mix(in oklab, var(--color-base-content) 10%, transparent);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 
-  .tbody & {
-    transition: background-color 0.15s ease-in-out;
+  .tr {
+    display: flex;
+  }
 
-    &:focus-within {
-      background-color: oklch(from var(--color-primary) l c h / 0.2);
-    }
+  .th {
+    display: flex;
+    align-items: center;
+    padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-    &.clickable:hover {
-      background-color: oklch(from var(--color-primary) l c h / 0.1);
-    }
+    button {
+      font-weight: 500;
+      color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+      justify-content: flex-start;
+      padding-inline: calc(var(--spacing) * 1);
 
-    &.clickable:active {
-      background-color: oklch(from var(--color-primary) l c h / 0.15);
+      &:hover {
+        background-color: color-mix(
+          in oklab,
+          var(--color-base-content) 8%,
+          transparent
+        );
+      }
     }
   }
 }
 
+/* ========== Body Styles ========== */
+.tbody {
+  background-color: var(--color-base-100);
+  position: relative;
+}
+
+tr {
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid
+    color-mix(in oklab, var(--color-base-content) 8%, transparent);
+  transition: background-color 0.15s ease-in-out;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .tbody & {
+    /* Zebra striping */
+    &:nth-child(even) {
+      background-color: color-mix(
+        in oklab,
+        var(--color-base-content) 2%,
+        transparent
+      );
+    }
+
+    &:hover {
+      background-color: color-mix(
+        in oklab,
+        var(--color-base-content) 5%,
+        transparent
+      );
+    }
+
+    &:focus-within {
+      background-color: oklch(from var(--color-primary) l c h / 0.08);
+    }
+
+    &.clickable:hover {
+      background-color: oklch(from var(--color-primary) l c h / 0.06);
+    }
+
+    &.clickable:active {
+      background-color: oklch(from var(--color-primary) l c h / 0.1);
+    }
+  }
+}
+
+/* ========== Cell Styles ========== */
 td {
   margin: 0;
   text-align: left;
@@ -42,18 +110,20 @@ td {
   overflow: hidden;
   text-overflow: ellipsis;
   user-select: none;
+  font-size: 0.875rem;
+  color: var(--color-base-content);
 
   & div.cell-content {
-    padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
     height: 100%;
     border-radius: var(--radius-field);
-    transition: box-shadow 0.15s ease-in-out;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: calc(var(--spacing) * 2);
 
     &:focus-within {
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-sm);
     }
 
     &:hover button.data-grid-detail-button {
@@ -63,22 +133,29 @@ td {
   }
 }
 
-thead th {
+/* ========== Footer Styles ========== */
+tfoot th {
   color: oklch(from var(--color-base-content) l c h / 0.7);
+  padding: calc(var(--spacing) * 2);
+  font-weight: 500;
 }
 
+/* ========== Resizer Styles ========== */
 .resizer {
   position: absolute;
   top: 0;
   height: 100%;
   right: 0;
-  width: 4px;
-  background: oklch(from var(--color-primary) l c h / 0.25);
+  width: 3px;
+  background: transparent;
   cursor: col-resize;
   user-select: none;
   touch-action: none;
+  transition: background-color 0.15s ease;
+}
 
-  &:hover {
-    background: var(--color-primary);
-  }
+.th:hover .resizer,
+.resizer:hover,
+.resizer.isResizing {
+  background: var(--color-primary);
 }

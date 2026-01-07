@@ -1,8 +1,8 @@
-<div class="overflow-auto">
-  <div class="w-fit" [style]="store.columnSizeVars()" [style.width.px]="store.table.getTotalSize()">
+<div class="overflow-auto h-full w-full">
+  <div class="min-w-full" [style]="store.columnSizeVars()" [style.min-width.px]="store.table.getTotalSize()">
     <div class="thead" #tableHeader>
       @for (headerGroup of store.table.getHeaderGroups(); track headerGroup.id) {
-        <div class="flex tr w-fit">
+        <div class="flex tr min-w-full">
           @for (header of headerGroup.headers; track header.id) {
             @if (!header.isPlaceholder) {
               <div class="relative th" [tableResizableHeader]="header.id">
@@ -68,16 +68,12 @@
           }
         </tr>
       } @empty {
-        <tr>
-          <td [attr.colspan]="store.table.getVisibleFlatColumns().length">
-            <div class="flex flex-col items-center justify-center gap-4 py-12">
-              <span class="icon-[tabler--folder-x] size-12 text-base-content/30"></span>
-              <p class="text-base-content/50">
-                {{ 'no_data' | translate }}
-              </p>
-            </div>
-          </td>
-        </tr>
+        <div class="absolute inset-0 flex flex-col items-center justify-center gap-4">
+          <span class="icon-[tabler--folder-x] size-12 text-base-content/30"></span>
+          <p class="text-base-content/50">
+            {{ 'no_data' | translate }}
+          </p>
+        </div>
       }
     </div>
     <tfoot>

@@ -91,7 +91,7 @@ export const parseNonEditableColumn = (
       const defaultColor = badgeColumn.badgeConfig?.defaultColor ?? 'neutral';
       const color = colorMap[value] ?? defaultColor;
 
-      return `<span class="badge badge-${color}">${value}</span>`;
+      return `<span class="badge badge-soft badge-${color}">${value}</span>`;
     };
   }
 
