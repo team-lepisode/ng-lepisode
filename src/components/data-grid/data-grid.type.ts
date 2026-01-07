@@ -131,6 +131,13 @@ type DataGridCommonColumnDef = {
   headerIconClass?: string;
   formatter?: (cell: CellContext<any, unknown>) => string;
   component?: ComponentType<any>;
+
+  /** 컬럼 너비 (기본값: 200) */
+  size?: number;
+  /** 컬럼 최소 너비 (기본값: 100) */
+  minSize?: number;
+  /** 컬럼 최대 너비 (기본값: 500) */
+  maxSize?: number;
 };
 
 export type DataGridTextColumnDef = DataGridCommonColumnDef & {

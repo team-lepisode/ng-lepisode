@@ -19,9 +19,9 @@ export const parseNonEditableColumn = (
       type: column.type ?? 'text',
       detail: column.detail ?? false,
     },
-    size: 200,
-    minSize: 100,
-    maxSize: 500,
+    size: column.size ?? 200,
+    minSize: column.minSize ?? 100,
+    maxSize: column.maxSize ?? 500,
   };
 
   if (column.type === 'date') {
