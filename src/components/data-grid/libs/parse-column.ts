@@ -11,6 +11,9 @@ export const parseColumn = (
     return {
       header: column.header ?? 'row_number',
       enableColumnFilter: false,
+      size: 60,
+      minSize: 50,
+      maxSize: 80,
       cell: (cell) => {
         return cell.row.index + 1;
       },

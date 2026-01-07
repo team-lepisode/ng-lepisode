@@ -1,4 +1,4 @@
-import { computed, Injectable, signal, untracked } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import {
   ColumnFiltersState,
   createAngularTable,
@@ -119,10 +119,12 @@ export class DataGridComponentStore {
   readonly columnSizeVars = computed(() => {
     if (!this.table) return {};
 
+    // Explicitly depend on columns to recalculate when columns change
+    void this.columns();
     void this.columnSizing();
     void this.columnSizingInfo();
 
-    const headers = untracked(() => this.table?.getFlatHeaders() ?? []);
+    const headers = this.table.getFlatHeaders();
     const colSizes: { [key: string]: number } = {};
     let i = headers.length;
     while (--i >= 0) {

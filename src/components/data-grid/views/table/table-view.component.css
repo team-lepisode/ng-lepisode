@@ -35,9 +35,8 @@
   td {
     margin: 0;
     text-align: left;
-    white-space: nowrap;
-    text-overflow: ellipsis;
     user-select: none;
+    overflow: hidden;
 
     & div.cell-content {
       padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
@@ -47,6 +46,15 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      overflow: hidden;
+
+      & > *:first-child {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
       &:focus-within {
         box-shadow: var(--shadow-md);
@@ -61,6 +69,20 @@
 
   thead th {
     color: oklch(from var(--color-base-content) l c h / 0.7);
+  }
+
+  .th {
+    overflow: hidden;
+
+    & button {
+      overflow: hidden;
+
+      & > span:not(.icon-[tabler--chevron-up]) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
   }
 
   .resizer {
