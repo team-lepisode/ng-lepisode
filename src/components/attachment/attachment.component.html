@@ -1,0 +1,19 @@
+<a
+  [href]="url()"
+  target="_blank"
+  class="attachment-item group flex items-center gap-3 p-3 rounded-xl bg-base-200/50 border border-base-300/50 hover:bg-base-200 hover:border-primary/30 transition-all duration-200 no-underline">
+  <div
+    class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-base-100 shadow-sm group-hover:text-primary transition-colors">
+    <span [class]="getFileIcon()" class="size-6"></span>
+  </div>
+
+  <div class="flex-1 min-width-0">
+    <div class="text-sm font-medium text-base-content truncate group-hover:text-primary transition-colors">
+      {{ fileName() }}
+    </div>
+  </div>
+
+  <div class="flex-shrink-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+    <span class="icon-[mdi--download] size-5 text-primary"></span>
+  </div>
+</a>

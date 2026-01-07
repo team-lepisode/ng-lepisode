@@ -5,3 +5,4 @@ export * from './components/data-grid';
 export * from './components/editor';
 export * from './components/editor-viewer';
 export * from './components/file-uploader';
+export * from './components/attachment';

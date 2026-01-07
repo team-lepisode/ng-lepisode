@@ -63,7 +63,6 @@ export class EditorService {
               openOnClick: false,
               autolink: true,
               defaultProtocol: 'https',
-              protocols: ['http', 'https'],
             },
 
             codeBlock: {
@@ -102,7 +101,6 @@ export class EditorService {
               },
             },
           }),
-          // Link extension (separate from StarterKit)
           Image.configure({ allowBase64: true, inline: true }),
           Highlight.configure({
             multicolor: true,

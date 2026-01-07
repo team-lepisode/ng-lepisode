@@ -132,6 +132,11 @@ export class FileUploaderComponent
   }
 
   getFileName(url: string): string {
-    return url.split('/').pop() || url;
+    const fileName = url.split('/').pop() || url;
+    try {
+      return decodeURIComponent(fileName);
+    } catch (e) {
+      return fileName;
+    }
   }
 }

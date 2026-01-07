@@ -170,4 +170,26 @@ export class EditorToolbarComponent {
   canSplitCell(): boolean {
     return this.editorService.canSplitCell();
   }
+
+  // ========== Help Content ==========
+  readonly helpShortcuts = [
+    { key: 'Ctrl+B', desc: '굵게' },
+    { key: 'Ctrl+I', desc: '기울임' },
+    { key: 'Ctrl+U', desc: '밑줄' },
+    { key: 'Ctrl+Z', desc: '취소' },
+    { key: 'Ctrl+Y', desc: '다시' },
+  ];
+
+  readonly helpSlashCommands = [
+    { icon: 'icon-[mdi--format-header-1]', title: '제목 1' },
+    { icon: 'icon-[mdi--format-header-2]', title: '제목 2' },
+    { icon: 'icon-[mdi--format-header-3]', title: '제목 3' },
+    { icon: 'icon-[mdi--format-list-bulleted]', title: '불렛' },
+    { icon: 'icon-[mdi--format-list-numbered]', title: '번호' },
+    { icon: 'icon-[mdi--table-large-plus]', title: '표' },
+    { icon: 'icon-[mdi--code-braces]', title: '코드' },
+    { icon: 'icon-[mdi--format-quote-close]', title: '인용' },
+    { icon: 'icon-[mdi--minus]', title: '구분선' },
+    { icon: 'icon-[mdi--marker]', title: '강조' },
+  ];
 }

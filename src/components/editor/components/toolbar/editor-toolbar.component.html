@@ -27,9 +27,51 @@
       <ng-container *ngTemplateOutlet="listTools"></ng-container>
       <div class="divider divider-horizontal mx-0"></div>
       <ng-container *ngTemplateOutlet="insertTools"></ng-container>
-      <!-- <div class="divider divider-horizontal mx-0"></div> -->
 
-      <!-- <ng-container *ngTemplateOutlet="historyTools"></ng-container> -->
+      <div class="flex-1"></div>
+
+      <!-- Help Dropdown -->
+      <div class="dropdown dropdown-bottom dropdown-end">
+        <div tabindex="0" role="button" aria-label="도움말" class="btn btn-ghost btn-sm btn-square">
+          <span class="icon-[mdi--help-circle-outline] size-6 text-base-content/50"></span>
+        </div>
+        <div
+          tabindex="0"
+          class="dropdown-content bg-base-100 rounded-box p-4 shadow-xl border border-base-200 z-50 mt-2 w-72">
+          <div class="flex flex-col gap-4">
+            <!-- Slash Commands -->
+            <div>
+              <div class="text-xs font-bold text-primary mb-2 flex items-center gap-1">
+                <span class="icon-[mdi--slash-forward] size-4"></span>
+                슬래시(/) 커맨드
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                @for (cmd of helpSlashCommands; track cmd.title) {
+                  <div class="flex items-center gap-2 text-[11px] bg-base-200/50 p-1 rounded">
+                    <span [class]="cmd.icon" class="size-4 opacity-70"></span>
+                    <span>{{ cmd.title }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+            <!-- Shortcuts -->
+            <div>
+              <div class="text-xs font-bold text-primary mb-2 flex items-center gap-1">
+                <span class="icon-[mdi--keyboard-outline] size-4"></span>
+                단축키
+              </div>
+              <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                @for (item of helpShortcuts; track item.key) {
+                  <div class="flex items-center justify-between text-[11px]">
+                    <span class="opacity-60">{{ item.desc }}</span>
+                    <kbd class="kbd kbd-xs">{{ item.key }}</kbd>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </ng-template>
 
@@ -42,6 +84,49 @@
     <button type="button" class="btn btn-sm btn-primary btn-soft btn-square" (click)="toggleBottomSheet.emit()">
       <span class="icon-[mdi--dots-horizontal] size-6"></span>
     </button>
+
+    <!-- Mobile Help Dropdown -->
+    <div class="dropdown dropdown-top dropdown-end">
+      <div tabindex="0" role="button" class="btn btn-sm btn-ghost btn-square">
+        <span class="icon-[mdi--help-circle-outline] size-6 text-base-content/50"></span>
+      </div>
+      <div
+        tabindex="0"
+        class="dropdown-content bg-base-100 rounded-box p-4 shadow-xl border border-base-200 z-50 mb-2 w-72">
+        <div class="flex flex-col gap-4">
+          <!-- Slash Commands -->
+          <div>
+            <div class="text-xs font-bold text-primary mb-2 flex items-center gap-1">
+              <span class="icon-[mdi--slash-forward] size-4"></span>
+              슬래시(/) 커맨드
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              @for (cmd of helpSlashCommands; track cmd.title) {
+                <div class="flex items-center gap-2 text-[11px] bg-base-200/50 p-1 rounded">
+                  <span [class]="cmd.icon" class="size-4 opacity-70"></span>
+                  <span>{{ cmd.title }}</span>
+                </div>
+              }
+            </div>
+          </div>
+          <!-- Shortcuts -->
+          <div>
+            <div class="text-xs font-bold text-primary mb-2 flex items-center gap-1">
+              <span class="icon-[mdi--keyboard-outline] size-4"></span>
+              단축키
+            </div>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+              @for (item of helpShortcuts; track item.key) {
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="opacity-60">{{ item.desc }}</span>
+                  <kbd class="kbd kbd-xs">{{ item.key }}</kbd>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </ng-template>
 
   <!-- Reusable Tool Templates -->

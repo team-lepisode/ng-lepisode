@@ -316,5 +316,17 @@ export class EditorSlashCommandComponent {
         editor.chain().focus().deleteRange(range).toggleHighlight().run();
       },
     },
+    {
+      title: '링크',
+      description: '링크를 삽입합니다',
+      icon: 'icon-[mdi--link]',
+      keywords: ['link', 'url', '링크'],
+      command: ({ editor, range }: any) => {
+        // This will be handled by the editor component to open the popover
+        editor.chain().focus().deleteRange(range).run();
+        // Trigger a custom event or let the component handle it
+        window.dispatchEvent(new CustomEvent('open-link-popover'));
+      },
+    },
   ];
 }
