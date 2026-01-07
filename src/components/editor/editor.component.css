@@ -16,120 +16,256 @@ button.editor-button.active {
 }
 
 .editor-container {
-  background-color: var(--color-base-200);
-  border-radius: var(--radius-field);
-  border: 1px solid color-mix(in oklab, var(--color-base-content) 20%, #0000);
-
-  transition-property: border-color;
-  transition-timing-function: var(
-    --tw-ease,
-    var(--default-transition-timing-function)
-  );
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
-
   display: flex;
   flex-direction: column;
+  padding: 1rem;
+  background-color: var(--color-base-100);
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in oklab, var(--color-base-content) 20%, #0000);
+  position: relative;
+  transition: border-color 0.2s;
 
   &:focus-within {
     border-color: var(--input-color);
   }
 }
 
+.editor-container.mobile-layout {
+  height: 100%;
+}
+
 .editor-toolbar {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  padding: calc(var(--spacing) * 2);
+  padding: 0.5rem;
   background-color: var(--color-base-100);
+  z-index: 10;
+}
+
+.top-toolbar {
   border-bottom: 1px solid
-    color-mix(in oklab, var(--color-base-content) 20%, #0000);
+    color-mix(in oklab, var(--color-base-content) 10%, #0000);
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
-  flex-wrap: wrap;
+}
+
+.bottom-toolbar {
+  border-top: 1px solid
+    color-mix(in oklab, var(--color-base-content) 10%, #0000);
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .editor-content {
   min-height: 16rem;
   color: var(--color-base-content);
   background-color: var(--color-base-100);
-  padding: 1rem;
-  max-height: calc(var(--spacing) * 96);
-  height: calc(var(--spacing) * 96);
+  max-height: 60vh;
   overflow-y: auto;
-
-  border-bottom-left-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
+  flex: 1;
 }
 
-:host ::ng-deep {
-  table {
-    border-collapse: collapse;
-    margin: 0;
-    overflow: hidden;
-    table-layout: fixed;
-    width: 100%;
+.bubble-menu,
+.floating-menu {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+}
 
-    td,
-    th {
-      border: 1px solid var(--color-base-content);
-      box-sizing: border-box;
-      min-width: 1em;
-      padding: 6px 8px;
-      position: relative;
-      vertical-align: top;
+.bubble-menu.tiptap-bubble-menu--visible,
+.floating-menu.tiptap-floating-menu--visible {
+  visibility: visible;
+  opacity: 1;
+}
 
-      > * {
-        margin-bottom: 0;
-      }
-    }
+/* ========== Paragraph Styles ========== */
+:host ::ng-deep .tiptap .editor-paragraph {
+  min-height: 1.5em;
+  margin-bottom: 0.5em;
+}
 
-    th {
-      background-color: var(--color-base-200);
-      font-weight: bold;
-      text-align: left;
-    }
+:host ::ng-deep .tiptap p:empty,
+:host ::ng-deep .tiptap p:has(> br:only-child) {
+  display: block;
+  min-height: 1.5em;
+}
 
-    .selectedCell:after {
-      background: color-mix(in oklch, var(--color-primary), transparent 70%);
-      content: '';
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      pointer-events: none;
-      position: absolute;
-      z-index: 2;
-    }
+/* ========== Heading Styles ========== */
+:host ::ng-deep .tiptap h1.editor-heading,
+:host ::ng-deep .tiptap h2.editor-heading,
+:host ::ng-deep .tiptap h3.editor-heading,
+:host ::ng-deep .tiptap h4.editor-heading {
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  line-height: 1.25;
+}
 
-    .column-resize-handle {
-      background-color: var(--color-primary);
-      cursor: ew-resize;
-      bottom: -2px;
-      pointer-events: none;
-      position: absolute;
-      right: -2px;
-      top: 0;
-      width: 4px;
-    }
-  }
+:host ::ng-deep .tiptap h1.editor-heading {
+  font-size: 2rem;
+}
 
-  .tableWrapper {
-    margin: 1.5rem 0;
-    overflow-x: auto;
-  }
+:host ::ng-deep .tiptap h2.editor-heading {
+  font-size: 1.5rem;
+}
 
-  .resize-cursor {
-    cursor: ew-resize;
-    cursor: col-resize;
-  }
+:host ::ng-deep .tiptap h3.editor-heading {
+  font-size: 1.25rem;
+}
 
-  ul {
-    padding-left: 1.25rem;
-    list-style-type: disc;
-  }
+:host ::ng-deep .tiptap h4.editor-heading {
+  font-size: 1.125rem;
+}
 
-  ol {
-    padding-left: 1.25rem;
-    list-style-type: decimal;
-  }
+/* ========== List Styles ========== */
+:host ::ng-deep .tiptap .editor-bullet-list {
+  padding-left: 1.25rem;
+  list-style-type: disc;
+  margin-bottom: 1em;
+}
+
+:host ::ng-deep .tiptap .editor-ordered-list {
+  padding-left: 1.25rem;
+  list-style-type: decimal;
+  margin-bottom: 1em;
+}
+
+:host ::ng-deep .tiptap li {
+  margin-bottom: 0.25em;
+}
+
+/* ========== Blockquote Styles ========== */
+:host ::ng-deep .tiptap .editor-blockquote {
+  border-left: 4px solid var(--color-base-300);
+  padding-left: 1em;
+  margin-left: 0;
+  margin-bottom: 1em;
+  color: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+  font-style: italic;
+}
+
+/* ========== Code Block Styles ========== */
+:host ::ng-deep .tiptap .editor-code-block {
+  background-color: var(--color-base-200);
+  padding: 1em;
+  border-radius: var(--radius-field);
+  overflow-x: auto;
+  margin-bottom: 1em;
+  font-family: monospace;
+  font-size: 0.875em;
+}
+
+:host ::ng-deep .tiptap code {
+  background-color: var(--color-base-200);
+  padding: 0.125em 0.25em;
+  border-radius: var(--radius-field);
+  font-size: 0.875em;
+  font-family: monospace;
+}
+
+/* ========== Table Styles ========== */
+:host ::ng-deep .tiptap table {
+  border-collapse: collapse;
+  margin: 0;
+  overflow: hidden;
+  table-layout: fixed;
+  width: 100%;
+}
+
+:host ::ng-deep .tiptap table td,
+:host ::ng-deep .tiptap table th {
+  border: 1px solid var(--color-base-content);
+  box-sizing: border-box;
+  min-width: 1em;
+  padding: 6px 8px;
+  position: relative;
+  vertical-align: top;
+}
+
+:host ::ng-deep .tiptap table td > *,
+:host ::ng-deep .tiptap table th > * {
+  margin-bottom: 0;
+}
+
+:host ::ng-deep .tiptap table th {
+  background-color: var(--color-base-200);
+  font-weight: bold;
+  text-align: left;
+}
+
+:host ::ng-deep .tiptap table .selectedCell:after {
+  background: color-mix(in oklch, var(--color-primary), transparent 70%);
+  content: '';
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+:host ::ng-deep .tiptap table .column-resize-handle {
+  background-color: var(--color-primary);
+  cursor: ew-resize;
+  bottom: -2px;
+  pointer-events: none;
+  position: absolute;
+  right: -2px;
+  top: 0;
+  width: 4px;
+}
+
+:host ::ng-deep .tiptap .tableWrapper {
+  margin: 1.5rem 0;
+
+  overflow-x: auto;
+}
+
+:host ::ng-deep .tiptap .resize-cursor {
+  cursor: ew-resize;
+  cursor: col-resize;
+}
+
+/* ========== Image Styles ========== */
+:host ::ng-deep .tiptap img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-field);
+  margin: 1em 0;
+  vertical-align: middle;
+}
+
+/* ========== Focus Styles ========== */
+:host ::ng-deep .tiptap:focus {
+  outline: none;
+}
+
+/* ========== Link Styles ========== */
+:host ::ng-deep .tiptap a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+:host ::ng-deep .tiptap a:hover {
+  color: oklch(from var(--color-primary) calc(l - 0.1) c h);
+}
+
+/* ========== Horizontal Rule ========== */
+:host ::ng-deep .tiptap hr {
+  border: none;
+  border-top: 1px solid var(--color-base-300);
+  margin: 2em 0;
 }

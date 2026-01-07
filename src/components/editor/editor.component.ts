@@ -1,8 +1,12 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   Component,
   ElementRef,
+  OnDestroy,
+  OnInit,
   booleanAttribute,
   inject,
   input,
@@ -10,39 +14,59 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { FormValueControl } from '@angular/forms/signals';
 import { Editor } from '@tiptap/core';
-import Highlight from '@tiptap/extension-highlight';
-import Image from '@tiptap/extension-image';
-import Subscript from '@tiptap/extension-subscript';
-import Superscript from '@tiptap/extension-superscript';
-import { TableKit } from '@tiptap/extension-table';
-import TextAlign from '@tiptap/extension-text-align';
-import { FontSize, TextStyleKit } from '@tiptap/extension-text-style';
-import { Focus } from '@tiptap/extensions';
-import { Markdown } from '@tiptap/markdown';
-import StarterKit from '@tiptap/starter-kit';
 import { TiptapEditorDirective } from 'ngx-tiptap';
-import { Node } from 'prosemirror-model';
-import { Transaction } from 'prosemirror-state';
+import { map, tap } from 'rxjs';
 import {
   NG_LEPISODE_CONFIG,
   NgLepisodeConfig,
 } from '../../libs/provideNgLepisode';
+import { EditorBottomSheetComponent } from './components/bottom-sheet/editor-bottom-sheet.component';
+import { EditorSlashCommandComponent } from './components/slash-command/editor-slash-command.component';
+import { EditorToolbarComponent } from './components/toolbar/editor-toolbar.component';
+import { EditorService } from './services/editor.service';
 
 @Component({
   selector: 'lepi-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, CdkMenuModule, TiptapEditorDirective],
+  imports: [
+    CommonModule,
+    FormsModule,
+    CdkMenuModule,
+    TiptapEditorDirective,
+    EditorToolbarComponent,
+    EditorBottomSheetComponent,
+    EditorSlashCommandComponent,
+  ],
+  providers: [EditorService],
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css'],
 })
-export class EditorComponent implements FormValueControl<string> {
+export class EditorComponent
+  implements FormValueControl<string>, OnInit, AfterViewInit, OnDestroy
+{
   private readonly config = inject<NgLepisodeConfig>(NG_LEPISODE_CONFIG);
   private readonly uploadService = this.config.uploadService;
+  private readonly breakpointObserver = inject(BreakpointObserver);
+  readonly editorService = inject(EditorService);
+
+  readonly isMobile = toSignal(
+    this.breakpointObserver
+      .observe([Breakpoints.Handset, Breakpoints.TabletPortrait])
+      .pipe(map(result => result.matches)),
+    { initialValue: false }
+  );
+
+  readonly showBottomSheet = signal<boolean>(false);
+  readonly slashCommandProps = signal<any>(null);
 
   highlightRef = viewChild.required<ElementRef<HTMLInputElement>>('highlight');
+  slashCommandRef = viewChild<EditorSlashCommandComponent>(
+    EditorSlashCommandComponent
+  );
 
   format = input<'html' | 'json'>('html');
   image = input<boolean, string | boolean>(true, {
@@ -53,148 +77,73 @@ export class EditorComponent implements FormValueControl<string> {
   });
 
   value = model<string>('');
+  value$ = toObservable(this.value);
 
-  editor: Editor | null = null;
-
-  // public editor = new Editor({
-  //   editorProps: {
-  //     attributes: {
-  //       style: 'outline: none',
-  //     },
-  //   },
-  //   extensions: [
-  //     StarterKit.configure({
-  //       paragraph: {
-  //         HTMLAttributes: {
-  //           class: 'min-h-6',
-  //         },
-  //       },
-  //       bulletList: {
-  //         HTMLAttributes: {
-  //           class: 'list-disc ml-5',
-  //         },
-  //       },
-  //       orderedList: {
-  //         HTMLAttributes: {
-  //           class: 'list-decimal ml-5',
-  //         },
-  //       },
-  //     }),
-  //     Underline,
-  //     Image.configure({ allowBase64: true }),
-  //     TextStyleKit,
-  //     FontSize,
-  //     Color,
-  //     TextAlign.configure({
-  //       types: ['paragraph', 'heading'],
-  //     }),
-  //     Highlight.configure({
-  //       multicolor: true,
-  //     }),
-  //     Superscript,
-  //     Subscript,
-  //     TableKit.configure({
-  //       table: {
-  //         resizable: true,
-  //       },
-  //     }),
-  //     Link.configure({
-  //       autolink: true,
-  //       linkOnPaste: true,
-  //       defaultProtocol: 'https',
-  //     }),
-  //   ],
-  //   onTransaction: ({ editor, transaction }) => {
-  //     // check if image node was deleted
-  //     this.handleImageDelete(transaction);
-  //   },
-
-  //   onCreate: ({ editor }) => {
-  //     editor.view.dom.spellcheck = false;
-  //     editor.commands.setFontSize('16px');
-  //   },
-  // });
-
-  ngOnInit(): void {
-    this.setEditor();
+  get editor(): Editor | null {
+    return this.editorService.editor;
   }
 
-  setEditor() {
-    this.editor = new Editor({
-      extensions: [
-        Markdown,
-        StarterKit.configure(),
-        FontSize,
-        Image.configure({ allowBase64: true }),
-        Highlight.configure({
-          multicolor: true,
-        }),
-        TextAlign.configure({
-          types: ['paragraph', 'heading'],
-        }),
-        Superscript,
-        Subscript,
-        TextStyleKit,
-        // Collaboration.configure({
-        //   document: this.provider.document,
-        // }),
-        // CollaborationCaret.configure({
-        //   provider: this.provider,
-        //   user: {
-        //     name: this.userStore.user$.value()?.email,
-        //     color: getColor(this.userStore.user$.value()?.email || ''),
-        //   },
-        // }),
-        TableKit.configure({
-          table: {
-            resizable: true,
-          },
-        }),
-        Focus.configure({
-          className: 'border border-primary rounded-field',
-          mode: 'all',
-        }),
-      ],
-      editorProps: {
-        attributes: {
-          spellcheck: 'false',
-          style: 'outline: none',
-        },
+  constructor() {
+    this.value$
+      .pipe(
+        tap(value => {
+          if (
+            this.editor &&
+            !this.editor.isFocused &&
+            this.editor.getHTML() !== value
+          ) {
+            this.editor.commands.setContent(value);
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
+    // 에디터 생성 (DOM 요소가 렌더링된 후)
+    this.editorService.createEditor({
+      onUpdate: html => {
+        if (this.value() !== html) {
+          this.value.set(html);
+        }
       },
-      onUpdate: ({ editor }) => {
-        this.value.set(editor.getMarkdown());
+      onSlashCommand: props => {
+        if (props.type === 'keydown') {
+          return this.slashCommandRef()?.onKeyDown(props.event) ?? false;
+        }
+        this.slashCommandProps.set(props);
+        return false;
       },
     });
   }
 
-  isCurrentNodeTable = signal<boolean>(false);
-
-  handleCommand(command: any, event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-    command();
+  ngOnDestroy(): void {
+    this.editorService.destroyEditor();
   }
 
-  selectImage(event: Event) {
+  // ========== Event Handlers ==========
+  insertLink(url: string, popover: HTMLElement): void {
+    this.editorService.insertLink(url);
+    popover.hidePopover();
+  }
+
+  selectImage(event: Event): void {
     event.stopPropagation();
     event.preventDefault();
-    const a = document.createElement('input');
-    a.type = 'file';
-    a.accept = 'image/*';
-    a.click();
-    a.onchange = e => {
-      const file = (e.target as any)?.files[0];
-
-      if (!file) {
-        return;
-      }
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.click();
+    input.onchange = e => {
+      const file = (e.target as HTMLInputElement)?.files?.[0];
+      if (!file) return;
 
       this.uploadService
         .upload(file)
         .then(uploadedFile => {
-          this.editor?.commands.setImage({
-            src: uploadedFile.url,
-          });
+          this.editorService.setImage(uploadedFile.url);
         })
         .catch(err => {
           console.error('Image upload failed', err);
@@ -202,43 +151,9 @@ export class EditorComponent implements FormValueControl<string> {
     };
   }
 
-  handleImageDelete(transaction: Transaction) {
-    const current: Node[] = [];
-    transaction.doc.content.forEach(node => {
-      if (node.type.name == 'image') {
-        current.push(node);
-      }
-    });
-    const before: Node[] = [];
-    transaction.before.content.forEach(node => {
-      if (node.type.name == 'image') {
-        before.push(node);
-      }
-    });
-    if (!current || before.length == 0) {
-      return;
-    }
-
-    const deletedImageNodes = before.filter(node => {
-      const src = node.attrs['src'];
-      return !current.find(curNode => curNode.attrs['src'] == src);
-    });
-
-    if (deletedImageNodes.length > 0) {
-      deletedImageNodes.forEach(async node => {
-        // await this.uploadService.delete(node.attrs['src']);
-      });
-    }
+  toggleBottomSheet(): void {
+    this.showBottomSheet.update(v => !v);
   }
 
-  // toggleHighlight() {
-  //   if (this.editor.isActive('highlight')) {
-  //     // 하이라이트가 활성화되어 있으면 제거
-  //     this.editor.chain().focus().unsetHighlight().run();
-  //   } else {
-  //     // 하이라이트가 없으면 색상 선택기 열기
-  //     const highlightInput = this.highlightRef().nativeElement;
-  //     highlightInput.click();
-  //   }
-  // }
+  focus = () => this.editorService.focus();
 }

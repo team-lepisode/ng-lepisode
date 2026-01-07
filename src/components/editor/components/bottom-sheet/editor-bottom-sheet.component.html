@@ -1,0 +1,109 @@
+@if (show()) {
+  <div class="modal modal-open modal-bottom sm:modal-middle" (click)="toggle()">
+    <div class="modal-box p-4 max-h-[80vh]" (click)="$event.stopPropagation()">
+      <h3 class="font-bold text-lg mb-4">추가 도구</h3>
+
+      <div class="flex flex-col gap-4 overflow-y-auto">
+        <!-- Style Section -->
+        <div class="tool-section">
+          <span class="text-sm font-semibold opacity-70 mb-2 block">스타일</span>
+          <div class="grid grid-cols-4 gap-2">
+            @for (item of styleItems; track item.title) {
+              <button
+                type="button"
+                class="tool-item"
+                [class.active]="item.isActive?.()"
+                (click)="executeItem(item)">
+                <div
+                  class="size-10 rounded-lg flex items-center justify-center transition-colors"
+                  [class.bg-primary/10]="!item.isActive?.()"
+                  [class.text-primary]="!item.isActive?.()"
+                  [class.bg-primary]="item.isActive?.()"
+                  [class.text-primary-content]="item.isActive?.()">
+                  <span [class]="item.icon" class="size-5"></span>
+                </div>
+                <span class="text-xs mt-1 opacity-70">{{ item.title }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- List Section -->
+        <div class="tool-section">
+          <span class="text-sm font-semibold opacity-70 mb-2 block">목록</span>
+          <div class="grid grid-cols-4 gap-2">
+            @for (item of listItems; track item.title) {
+              <button
+                type="button"
+                class="tool-item"
+                [class.active]="item.isActive?.()"
+                (click)="executeItem(item)">
+                <div
+                  class="size-10 rounded-lg flex items-center justify-center transition-colors"
+                  [class.bg-primary/10]="!item.isActive?.()"
+                  [class.text-primary]="!item.isActive?.()"
+                  [class.bg-primary]="item.isActive?.()"
+                  [class.text-primary-content]="item.isActive?.()">
+                  <span [class]="item.icon" class="size-5"></span>
+                </div>
+                <span class="text-xs mt-1 opacity-70">{{ item.title }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Insert Section -->
+        <div class="tool-section">
+          <span class="text-sm font-semibold opacity-70 mb-2 block">삽입</span>
+          <div class="grid grid-cols-4 gap-2">
+            @for (item of insertItems; track item.title) {
+              <button
+                type="button"
+                class="tool-item"
+                [class.active]="item.isActive?.()"
+                (click)="executeItem(item)">
+                <div
+                  class="size-10 rounded-lg flex items-center justify-center transition-colors"
+                  [class.bg-primary/10]="!item.isActive?.()"
+                  [class.text-primary]="!item.isActive?.()"
+                  [class.bg-primary]="item.isActive?.()"
+                  [class.text-primary-content]="item.isActive?.()">
+                  <span [class]="item.icon" class="size-5"></span>
+                </div>
+                <span class="text-xs mt-1 opacity-70">{{ item.title }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- History Section -->
+        <div class="tool-section">
+          <span class="text-sm font-semibold opacity-70 mb-2 block">기록</span>
+          <div class="grid grid-cols-4 gap-2">
+            @for (item of historyItems; track item.title) {
+              <button
+                type="button"
+                class="tool-item"
+                [class.btn-disabled]="item.isDisabled?.()"
+                [disabled]="item.isDisabled?.()"
+                (click)="executeItem(item)">
+                <div
+                  class="size-10 rounded-lg flex items-center justify-center transition-colors"
+                  [class.bg-primary/10]="!item.isDisabled?.()"
+                  [class.text-primary]="!item.isDisabled?.()"
+                  [class.opacity-30]="item.isDisabled?.()">
+                  <span [class]="item.icon" class="size-5"></span>
+                </div>
+                <span class="text-xs mt-1 opacity-70">{{ item.title }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-action mt-4">
+        <button class="btn btn-block" type="button" (click)="toggle()">닫기</button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,395 @@
+@if (editor) {
+  <!-- Desktop Toolbar (Top) -->
+  @if (!isMobile()) {
+    <header class="editor-toolbar top-toolbar">
+      <ng-container *ngTemplateOutlet="toolbarContent"></ng-container>
+    </header>
+  }
+
+  <!-- Mobile Toolbar (Bottom Sticky) -->
+  @if (isMobile()) {
+    <header class="editor-toolbar bottom-toolbar sticky bottom-0 z-10">
+      <div class="flex items-center gap-2 w-full no-scrollbar flex-wrap">
+        <ng-container *ngTemplateOutlet="mobileToolbarContent"></ng-container>
+      </div>
+    </header>
+  }
+
+  <!-- Toolbar Content Template -->
+  <ng-template #toolbarContent>
+    <div class="flex items-center gap-2 flex-nowrap no-scrollbar max-w-full p-1">
+      <ng-container *ngTemplateOutlet="headingDropdown"></ng-container>
+      <div class="divider divider-horizontal mx-0"></div>
+      <ng-container *ngTemplateOutlet="basicFormatting"></ng-container>
+      <div class="divider divider-horizontal mx-0"></div>
+      <ng-container *ngTemplateOutlet="alignmentTools"></ng-container>
+      <div class="divider divider-horizontal mx-0"></div>
+      <ng-container *ngTemplateOutlet="listTools"></ng-container>
+      <div class="divider divider-horizontal mx-0"></div>
+      <ng-container *ngTemplateOutlet="insertTools"></ng-container>
+      <!-- <div class="divider divider-horizontal mx-0"></div> -->
+
+      <!-- <ng-container *ngTemplateOutlet="historyTools"></ng-container> -->
+    </div>
+  </ng-template>
+
+  <!-- Mobile Toolbar Content Template -->
+  <ng-template #mobileToolbarContent>
+    <ng-container *ngTemplateOutlet="basicFormatting"></ng-container>
+    <div class="divider divider-horizontal mx-0"></div>
+    <ng-container *ngTemplateOutlet="alignmentTools"></ng-container>
+    <div class="divider divider-horizontal mx-0"></div>
+    <button type="button" class="btn btn-sm btn-primary btn-soft btn-square" (click)="toggleBottomSheet.emit()">
+      <span class="icon-[mdi--dots-horizontal] size-6"></span>
+    </button>
+  </ng-template>
+
+  <!-- Reusable Tool Templates -->
+  <ng-template #headingDropdown>
+    <div class="dropdown">
+      <div
+        tabindex="0"
+        role="button"
+        class="btn btn-sm btn-ghost gap-2 w-32 justify-between border border-base-content/20">
+        <div class="flex items-center gap-2">
+          <span [class]="getCurrentHeading().icon" class="size-5"></span>
+          <span>{{ getCurrentHeading().label }}</span>
+        </div>
+        <span class="icon-[mdi--chevron-down] size-4"></span>
+      </div>
+      <ul
+        tabindex="0"
+        class="dropdown-content menu bg-base-100 rounded-box z-[1] w-40 p-2 shadow-lg border border-base-200">
+        <li>
+          <button
+            type="button"
+            (click)="setParagraph()"
+            [class.active]="editor.isActive('paragraph') && !editor.isActive('heading')">
+            <span class="icon-[mdi--format-paragraph] size-5"></span>본문
+          </button>
+        </li>
+        <li>
+          <button type="button" (click)="setHeading(1)" [class.active]="editor.isActive('heading', { level: 1 })">
+            <span class="icon-[mdi--format-header-1] size-5"></span>제목 1
+          </button>
+        </li>
+        <li>
+          <button type="button" (click)="setHeading(2)" [class.active]="editor.isActive('heading', { level: 2 })">
+            <span class="icon-[mdi--format-header-2] size-5"></span>제목 2
+          </button>
+        </li>
+        <li>
+          <button type="button" (click)="setHeading(3)" [class.active]="editor.isActive('heading', { level: 3 })">
+            <span class="icon-[mdi--format-header-3] size-5"></span>제목 3
+          </button>
+        </li>
+        <li>
+          <button type="button" (click)="setHeading(4)" [class.active]="editor.isActive('heading', { level: 4 })">
+            <span class="icon-[mdi--format-header-4] size-5"></span>제목 4
+          </button>
+        </li>
+      </ul>
+    </div>
+  </ng-template>
+
+  <ng-template #basicFormatting>
+    <div class="join">
+      <button
+        type="button"
+        aria-label="굵게 (Ctrl+B)"
+        data-tip="굵게 (Ctrl+B)"
+        class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+        [class.btn-active]="editor.isActive('bold')"
+        (click)="toggleBold()">
+        <span class="icon-[mdi--format-bold] size-6"></span>
+      </button>
+      <button
+        type="button"
+        aria-label="기울임 (Ctrl+I)"
+        data-tip="기울임 (Ctrl+I)"
+        class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+        [class.btn-active]="editor.isActive('italic')"
+        (click)="toggleItalic()">
+        <span class="icon-[mdi--format-italic] size-6"></span>
+      </button>
+      <button
+        type="button"
+        aria-label="밑줄 (Ctrl+U)"
+        data-tip="밑줄 (Ctrl+U)"
+        class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+        [class.btn-active]="editor.isActive('underline')"
+        (click)="toggleUnderline()">
+        <span class="icon-[mdi--format-underline] size-6"></span>
+      </button>
+      <button
+        type="button"
+        aria-label="취소선 (Ctrl+Shift+S)"
+        data-tip="취소선 (Ctrl+Shift+S)"
+        class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+        [class.btn-active]="editor.isActive('strike')"
+        (click)="toggleStrike()">
+        <span class="icon-[mdi--format-strikethrough] size-6"></span>
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #alignmentTools>
+    <div class="join">
+      <button
+        type="button"
+        aria-label="왼쪽 정렬"
+        data-tip="왼쪽 정렬"
+        class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+        [class.btn-active]="editor.isActive({ textAlign: 'left' })"
+        (click)="setTextAlign('left')">
+        <span class="icon-[mdi--format-align-left] size-6"></span>
+      </button>
+      <button
+        type="button"
+        aria-label="가운데 정렬"
+        data-tip="가운데 정렬"
+        class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+        [class.btn-active]="editor.isActive({ textAlign: 'center' })"
+        (click)="setTextAlign('center')">
+        <span class="icon-[mdi--format-align-center] size-6"></span>
+      </button>
+      <button
+        type="button"
+        aria-label="오른쪽 정렬"
+        data-tip="오른쪽 정렬"
+        class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+        [class.btn-active]="editor.isActive({ textAlign: 'right' })"
+        (click)="setTextAlign('right')">
+        <span class="icon-[mdi--format-align-right] size-6"></span>
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #listTools>
+    <div class="join">
+      <button
+        type="button"
+        aria-label="글머리 기호"
+        data-tip="글머리 기호"
+        class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+        [class.btn-active]="editor.isActive('bulletList')"
+        (click)="toggleBulletList()">
+        <span class="icon-[mdi--format-list-bulleted] size-6"></span>
+      </button>
+      <button
+        type="button"
+        aria-label="번호 매기기"
+        data-tip="번호 매기기"
+        class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+        [class.btn-active]="editor.isActive('orderedList')"
+        (click)="toggleOrderedList()">
+        <span class="icon-[mdi--format-list-numbered] size-6"></span>
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #insertTools>
+    <div class="flex items-center gap-0">
+      <!-- Link Dropdown -->
+      <div class="dropdown dropdown-bottom dropdown-end">
+        <button
+          type="button"
+          tabindex="0"
+          aria-label="링크 (Ctrl+K)"
+          data-tip="링크 (Ctrl+K)"
+          class="btn btn-primary btn-soft btn-square tooltip btn-sm"
+          [class.btn-active]="editor.isActive('link')"
+          (click)="openLinkPopover()">
+          <span class="icon-[mdi--link] size-6"></span>
+        </button>
+        <div
+          #linkDropdown
+          tabindex="0"
+          class="dropdown-content bg-base-100 rounded-box p-3 shadow-xl border border-base-200 z-50 mt-2">
+          <div class="flex flex-col gap-2 w-64 md:w-72">
+            <label class="text-sm font-medium text-base-content">링크 URL</label>
+            <input
+              #linkInput
+              type="url"
+              placeholder="https://example.com"
+              class="input input-bordered input-sm w-full"
+              [(ngModel)]="linkUrl"
+              (keydown.enter)="setLink()" />
+            <div class="flex gap-2 justify-end">
+              @if (isLinkActive()) {
+                <button type="button" class="btn btn-error btn-soft btn-sm" (click)="removeLink()">
+                  <span class="icon-[mdi--link-off] size-4"></span>
+                  삭제
+                </button>
+              }
+              <button type="button" class="btn btn-primary btn-sm" (click)="setLink()">
+                <span class="icon-[mdi--check] size-4"></span>
+                적용
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Tools -->
+      @if (isTableActive()) {
+        <!-- 테이블 편집 모드 -->
+        <div class="dropdown dropdown-bottom dropdown-end">
+          <button
+            type="button"
+            tabindex="0"
+            aria-label="표 편집"
+            data-tip="표 편집"
+            class="btn btn-secondary btn-soft btn-square tooltip btn-sm">
+            <span class="icon-[mdi--table-edit] size-6"></span>
+          </button>
+          <div
+            tabindex="0"
+            class="dropdown-content bg-base-100 rounded-box p-3 shadow-xl border border-base-200 z-50 mt-2 w-auto">
+            <div class="flex flex-col gap-2">
+              <!-- 열 관리 -->
+              <div class="flex items-center gap-1">
+                <span class="text-xs text-base-content/70 w-8">열</span>
+                <div class="join">
+                  <button
+                    type="button"
+                    aria-label="왼쪽에 열 추가"
+                    data-tip="왼쪽에 열 추가"
+                    class="btn btn-primary btn-soft btn-square join-item tooltip btn-xs"
+                    (click)="addColumnBefore()">
+                    <span class="icon-[mdi--table-column-plus-before] size-4"></span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="오른쪽에 열 추가"
+                    data-tip="오른쪽에 열 추가"
+                    class="btn btn-primary btn-soft btn-square join-item tooltip btn-xs"
+                    (click)="addColumnAfter()">
+                    <span class="icon-[mdi--table-column-plus-after] size-4"></span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="열 삭제"
+                    data-tip="열 삭제"
+                    class="btn btn-error btn-soft btn-square join-item tooltip btn-xs"
+                    (click)="deleteColumn()">
+                    <span class="icon-[mdi--table-column-remove] size-4"></span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 행 관리 -->
+              <div class="flex items-center gap-1">
+                <span class="text-xs text-base-content/70 w-8">행</span>
+                <div class="join">
+                  <button
+                    type="button"
+                    aria-label="위에 행 추가"
+                    data-tip="위에 행 추가"
+                    class="btn btn-primary btn-soft btn-square join-item tooltip btn-xs"
+                    (click)="addRowBefore()">
+                    <span class="icon-[mdi--table-row-plus-before] size-4"></span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="아래에 행 추가"
+                    data-tip="아래에 행 추가"
+                    class="btn btn-primary btn-soft btn-square join-item tooltip btn-xs"
+                    (click)="addRowAfter()">
+                    <span class="icon-[mdi--table-row-plus-after] size-4"></span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="행 삭제"
+                    data-tip="행 삭제"
+                    class="btn btn-error btn-soft btn-square join-item tooltip btn-xs"
+                    (click)="deleteRow()">
+                    <span class="icon-[mdi--table-row-remove] size-4"></span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 셀 관리 -->
+              <div class="flex items-center gap-1">
+                <span class="text-xs text-base-content/70 w-8">셀</span>
+                <div class="join">
+                  <button
+                    type="button"
+                    aria-label="셀 병합"
+                    data-tip="셀 병합"
+                    class="btn btn-primary btn-soft btn-square join-item tooltip btn-xs"
+                    [class.btn-disabled]="!canMergeCells()"
+                    (click)="mergeCells()">
+                    <span class="icon-[mdi--table-merge-cells] size-4"></span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="셀 분할"
+                    data-tip="셀 분할"
+                    class="btn btn-primary btn-soft btn-square join-item tooltip btn-xs"
+                    [class.btn-disabled]="!canSplitCell()"
+                    (click)="splitCell()">
+                    <span class="icon-[mdi--table-split-cell] size-4"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="divider my-0"></div>
+
+              <!-- 표 삭제 -->
+              <button type="button" class="btn btn-error btn-soft btn-sm w-full" (click)="deleteTable()">
+                <span class="icon-[mdi--table-remove] size-4"></span>
+                표 삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <!-- 표 삽입 모드 -->
+        <button
+          type="button"
+          aria-label="표 삽입"
+          data-tip="표 삽입"
+          class="btn btn-primary btn-soft btn-square tooltip btn-sm"
+          (click)="insertTable()">
+          <span class="icon-[mdi--table-large-plus] size-6"></span>
+        </button>
+      }
+
+      <!-- Image Button -->
+      @if (image()) {
+        <button
+          type="button"
+          aria-label="이미지 삽입"
+          data-tip="이미지"
+          class="btn btn-primary btn-soft btn-square tooltip btn-sm"
+          (click)="selectImage.emit($event)">
+          <span class="icon-[mdi--image-plus] size-6"></span>
+        </button>
+      }
+    </div>
+  </ng-template>
+
+  <ng-template #historyTools>
+    <div class="join">
+      <button
+        type="button"
+        aria-label="실행 취소 (Ctrl+Z)"
+        data-tip="실행 취소 (Ctrl+Z)"
+        class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+        (click)="undo()"
+        [class.btn-disabled]="!canUndo()">
+        <span class="icon-[mdi--undo] size-6"></span>
+      </button>
+      <button
+        type="button"
+        aria-label="다시 실행 (Ctrl+Y)"
+        data-tip="다시 실행 (Ctrl+Y)"
+        class="btn btn-primary btn-soft btn-square join-item tooltip btn-sm"
+        (click)="redo()"
+        [class.btn-disabled]="!canRedo()">
+        <span class="icon-[mdi--redo] size-6"></span>
+      </button>
+    </div>
+  </ng-template>
+}

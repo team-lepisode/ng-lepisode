@@ -1,0 +1,75 @@
+@if (props()?.active) {
+  <div
+    class="slash-command-suggestions menu bg-base-100 rounded-box shadow-xl border border-base-200 p-2 z-50 fixed"
+    [class.mobile-mode]="isMobile()"
+    [class.show-above]="shouldShowAbove()"
+    [style.left.px]="props().clientRect().left"
+    [style.top.px]="menuTopPosition()">
+    @if (!isMobile()) {
+      <!-- Query Display (Desktop) -->
+      @if (props().query) {
+        <div class="px-3 py-2 text-xs font-medium text-primary bg-primary/10 rounded-lg mb-2">
+          <span class="opacity-60">검색:</span> {{ props().query }}
+        </div>
+      } @else {
+        <div class="px-3 py-2 text-xs font-bold opacity-50 uppercase tracking-wider">명령어</div>
+      }
+    }
+
+    <!-- Command List -->
+    @if (filteredCommands().length === 0) {
+      <div class="px-3 py-4 text-center text-sm opacity-50">검색 결과가 없습니다</div>
+    } @else {
+      <!-- Desktop: Vertical List -->
+      @if (!isMobile()) {
+        <div class="command-list flex flex-col overflow-y-auto">
+          @for (item of filteredCommands(); track item.title; let i = $index) {
+            <li>
+              <button
+                type="button"
+                class="flex items-center gap-3 py-2 transition-all duration-200 w-full"
+                [class.active]="i === selectedIndex()"
+                (click)="props().command(item)">
+                <div
+                  class="size-8 rounded flex items-center justify-center transition-colors"
+                  [class.bg-primary/10]="i !== selectedIndex()"
+                  [class.text-primary]="i !== selectedIndex()"
+                  [class.bg-primary]="i === selectedIndex()"
+                  [class.text-primary-content]="i === selectedIndex()">
+                  <span [class]="item.icon" class="size-5"></span>
+                </div>
+                <div class="flex flex-col items-start">
+                  <span class="text-sm font-medium">{{ item.title }}</span>
+                  <span class="text-xs opacity-60">{{ item.description }}</span>
+                </div>
+              </button>
+            </li>
+          }
+        </div>
+      }
+
+      <!-- Mobile: 3-column Grid -->
+      @if (isMobile()) {
+        <div class="mobile-grid">
+          @for (item of filteredCommands(); track item.title; let i = $index) {
+            <button
+              type="button"
+              class="mobile-grid-item tooltip tooltip-bottom"
+              [attr.data-tip]="item.title"
+              [class.active]="i === selectedIndex()"
+              (click)="props().command(item)">
+              <div
+                class="size-10 rounded-lg flex items-center justify-center transition-colors"
+                [class.bg-primary/10]="i !== selectedIndex()"
+                [class.text-primary]="i !== selectedIndex()"
+                [class.bg-primary]="i === selectedIndex()"
+                [class.text-primary-content]="i === selectedIndex()">
+                <span [class]="item.icon" class="size-5"></span>
+              </div>
+            </button>
+          }
+        </div>
+      }
+    }
+  </div>
+}
