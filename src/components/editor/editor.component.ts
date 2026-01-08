@@ -19,7 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { FormValueControl } from '@angular/forms/signals';
 import { Editor } from '@tiptap/core';
 import { TiptapEditorDirective } from 'ngx-tiptap';
-import { map, tap } from 'rxjs';
+import { map } from 'rxjs';
 import {
   NG_LEPISODE_CONFIG,
   NgLepisodeConfig,
@@ -68,11 +68,7 @@ export class EditorComponent
     EditorSlashCommandComponent
   );
 
-  format = input<'html' | 'json'>('html');
   image = input<boolean, string | boolean>(true, {
-    transform: booleanAttribute,
-  });
-  viewer = input<boolean, string | boolean>(false, {
     transform: booleanAttribute,
   });
 
@@ -83,27 +79,12 @@ export class EditorComponent
     return this.editorService.editor;
   }
 
-  constructor() {
-    this.value$
-      .pipe(
-        tap(value => {
-          if (
-            this.editor &&
-            !this.editor.isFocused &&
-            this.editor.getHTML() !== value
-          ) {
-            this.editor.commands.setContent(value);
-          }
-        })
-      )
-      .subscribe();
-  }
+  constructor() {}
 
-  ngOnInit(): void {}
-
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     // 에디터 생성 (DOM 요소가 렌더링된 후)
     this.editorService.createEditor({
+      content: this.value(),
       onUpdate: html => {
         if (this.value() !== html) {
           this.value.set(html);
@@ -116,6 +97,18 @@ export class EditorComponent
         this.slashCommandProps.set(props);
         return false;
       },
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.value$.subscribe(value => {
+      if (
+        this.editor &&
+        !this.editor.isFocused &&
+        this.editor.getHTML() !== value
+      ) {
+        this.editor.commands.setContent(value);
+      }
     });
   }
 

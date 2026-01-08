@@ -1,4 +1,4 @@
-# Lepi Editor & Editor Viewer
+# Lepi Editor
 
 Tiptap 기반의 리치 텍스트 에디터 컴포넌트입니다.
 
@@ -7,10 +7,10 @@ Tiptap 기반의 리치 텍스트 에디터 컴포넌트입니다.
 `ng-lepisode` 라이브러리에 포함되어 있습니다.
 
 ```typescript
-import { EditorComponent, EditorViewerComponent } from '@ng-lepisode';
+import { EditorComponent } from '@ng-lepisode';
 ```
 
-## Components
+## Component
 
 ### `<lepi-editor>`
 
@@ -18,12 +18,10 @@ import { EditorComponent, EditorViewerComponent } from '@ng-lepisode';
 
 #### Inputs
 
-| Input    | Type               | Default  | Description                   |
-| -------- | ------------------ | -------- | ----------------------------- |
-| `value`  | `string`           | `''`     | 에디터 콘텐츠 (양방향 바인딩) |
-| `format` | `'html' \| 'json'` | `'html'` | 출력 포맷                     |
-| `image`  | `boolean`          | `true`   | 이미지 삽입 버튼 표시 여부    |
-| `viewer` | `boolean`          | `false`  | 읽기 전용 모드                |
+| Input   | Type      | Default | Description                   |
+| ------- | --------- | ------- | ----------------------------- |
+| `value` | `string`  | `''`    | 에디터 콘텐츠 (양방향 바인딩) |
+| `image` | `boolean` | `true`  | 이미지 삽입 버튼 표시 여부    |
 
 #### Usage
 
@@ -35,30 +33,7 @@ import { EditorComponent, EditorViewerComponent } from '@ng-lepisode';
 <lepi-editor [(value)]="content" [image]="false" />
 
 <!-- Signal Forms와 함께 사용 -->
-<lepi-editor [(value)]="myModel().content" />
-```
-
----
-
-### `<lepi-editor-viewer>`
-
-에디터로 작성된 HTML 콘텐츠를 읽기 전용으로 표시합니다.
-
-#### Inputs
-
-| Input          | Type      | Default | Description           |
-| -------------- | --------- | ------- | --------------------- |
-| `content`      | `string`  | `''`    | 표시할 HTML 콘텐츠    |
-| `removeImages` | `boolean` | `false` | 이미지 태그 제거 여부 |
-
-#### Usage
-
-```html
-<!-- 기본 사용 -->
-<lepi-editor-viewer [content]="htmlContent" />
-
-<!-- 이미지 제거 -->
-<lepi-editor-viewer [content]="htmlContent" [removeImages]="true" />
+<lepi-editor [field]="myForm.content" />
 ```
 
 ---
@@ -137,14 +112,8 @@ import { EditorComponent, EditorViewerComponent } from '@ng-lepisode';
 ```typescript
 @Component({
   selector: 'app-example',
-  imports: [EditorComponent, EditorViewerComponent],
-  template: `
-    <!-- 편집 모드 -->
-    <lepi-editor [(value)]="content" />
-
-    <!-- 미리보기 -->
-    <lepi-editor-viewer [content]="content()" />
-  `,
+  imports: [EditorComponent],
+  template: ` <lepi-editor [(value)]="content" /> `,
 })
 export class ExampleComponent {
   content = signal('<p>Hello World</p>');

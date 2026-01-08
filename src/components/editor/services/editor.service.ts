@@ -13,6 +13,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Suggestion from '@tiptap/suggestion';
 
 export interface EditorConfig {
+  content?: string;
   onUpdate?: (html: string) => void;
   onSlashCommand?: (props: any) => boolean | void;
 }
@@ -55,6 +56,7 @@ export class EditorService {
   createEditor(config?: EditorConfig): Editor {
     this._editor.set(
       new Editor({
+        content: config?.content || '',
         extensions: [
           Markdown,
           StarterKit.configure({
