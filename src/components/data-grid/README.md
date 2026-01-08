@@ -18,7 +18,11 @@
 이 컴포넌트는 `@ng-lepisode` 라이브러리의 일부입니다:
 
 ```typescript
-import { DataGridComponent, DataGridColumnDef, DataGridOptions } from '@ng-lepisode';
+import {
+  DataGridComponent,
+  DataGridColumnDef,
+  DataGridOptions,
+} from '@ng-lepisode';
 ```
 
 ## 기본 사용법
@@ -27,7 +31,11 @@ import { DataGridComponent, DataGridColumnDef, DataGridOptions } from '@ng-lepis
 
 ```typescript
 import { Component } from '@angular/core';
-import { DataGridComponent, DataGridColumnDef, DataGridOptions } from '@ng-lepisode';
+import {
+  DataGridComponent,
+  DataGridColumnDef,
+  DataGridOptions,
+} from '@ng-lepisode';
 
 @Component({
   selector: 'app-my-page',
@@ -78,8 +86,15 @@ const options: DataGridOptions = {
 ### 4. 템플릿에서 사용
 
 ```html
-<lepi-data-grid [rowData]="data()" [columns]="columns" [options]="options" (onCellEdit)="handleCellEdit($event)" (onDetailClick)="handleDetailClick($event)">
-  <button buttons class="btn btn-sm btn-primary" (click)="addNew()">추가하기</button>
+<lepi-data-grid
+  [rowData]="data()"
+  [columns]="columns"
+  [options]="options"
+  (onCellEdit)="handleCellEdit($event)"
+  (onDetailClick)="handleDetailClick($event)">
+  <button buttons class="btn btn-sm btn-primary" (click)="addNew()">
+    추가하기
+  </button>
 </lepi-data-grid>
 ```
 
@@ -304,6 +319,16 @@ handleDetailClick(row: any) {
 }
 ```
 
+### onRowClick
+
+행이 클릭될 때 발생합니다.
+
+```typescript
+handleRowClick(row: any) {
+  console.log('Row clicked:', row);
+}
+```
+
 ## 뷰 모드
 
 ### 테이블 뷰
@@ -423,7 +448,11 @@ export class MyPage {
 ```typescript
 import { Component, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DataGridComponent, DataGridColumnDef, DataGridOptions } from '@ng-lepisode';
+import {
+  DataGridComponent,
+  DataGridColumnDef,
+  DataGridOptions,
+} from '@ng-lepisode';
 import { TaskStore } from './task.store';
 import { TaskStatus, TaskPriority } from './task.types';
 
@@ -434,8 +463,15 @@ import { TaskStatus, TaskPriority } from './task.types';
     <div class="flex flex-col h-full gap-4">
       <h2>Tasks</h2>
 
-      <lepi-data-grid [rowData]="taskStore.tasks$.value()" [columns]="columns" [options]="options" (onCellEdit)="onCellEdit($event)" (onDetailClick)="onDetailClick($event)">
-        <button buttons class="btn btn-primary" (click)="taskStore.create()">Add Task</button>
+      <lepi-data-grid
+        [rowData]="taskStore.tasks$.value()"
+        [columns]="columns"
+        [options]="options"
+        (onCellEdit)="onCellEdit($event)"
+        (onDetailClick)="onDetailClick($event)">
+        <button buttons class="btn btn-primary" (click)="taskStore.create()">
+          Add Task
+        </button>
       </lepi-data-grid>
     </div>
   `,
@@ -513,7 +549,14 @@ export default class TasksPage {
 모든 컬럼 정의의 유니온 타입:
 
 ```typescript
-type DataGridColumnDef = DataGridTextColumnDef | DataGridDateColumnDef | DataGridNumberColumnDef | DataGridBooleanColumnDef | DataGridArrayColumnDef | DataGridListColumnDef | DataGridRowNumberColumnDef;
+type DataGridColumnDef =
+  | DataGridTextColumnDef
+  | DataGridDateColumnDef
+  | DataGridNumberColumnDef
+  | DataGridBooleanColumnDef
+  | DataGridArrayColumnDef
+  | DataGridListColumnDef
+  | DataGridRowNumberColumnDef;
 ```
 
 ### DataGridPersistedState
