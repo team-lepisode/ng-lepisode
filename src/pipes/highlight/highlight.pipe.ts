@@ -10,6 +10,6 @@ export class HighlightPipe implements PipeTransform {
     }
     const escapedTarget = target.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
     const regex = new RegExp(escapedTarget, 'gi');
-    return value.replace(regex, (match) => `<mark >${match}</mark>`);
+    return value.replace(regex, match => `<mark>${match}</mark>`);
   }
 }
