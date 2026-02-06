@@ -1,0 +1,42 @@
+<div
+  class="profile-uploader"
+  [class.drag-over]="isDragOver()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)">
+  <label class="avatar-container" [class.uploading]="isUploading()">
+    <input type="file" accept="image/*" (change)="onFileSelect($event)" class="hidden" />
+
+    @if (value()) {
+      <div class="avatar-preview">
+        <img [src]="value()" alt="Profile image" />
+        <div class="overlay">
+          <span class="icon-[lucide--camera] text-2xl text-white"></span>
+          <span class="text-xs text-white font-medium mt-1">변경</span>
+        </div>
+      </div>
+      <button type="button" class="remove-btn" (click)="removeImage($event)">
+        <span class="icon-[lucide--x] text-xs text-white"></span>
+      </button>
+    } @else {
+      <div class="avatar-placeholder">
+        @if (isUploading()) {
+          <span class="loading loading-spinner loading-md text-primary"></span>
+        } @else {
+          <span class="icon-[lucide--user] text-4xl text-base-content/20"></span>
+          <div class="plus-badge">
+            <span class="icon-[lucide--plus] text-xs text-white"></span>
+          </div>
+        }
+      </div>
+    }
+  </label>
+
+  <div class="helper-text">
+    @if (isUploading()) {
+      <span class="text-primary font-medium">업로드 중...</span>
+    } @else {
+      <span>이미지를 클릭하거나 드래그하세요</span>
+    }
+  </div>
+</div>

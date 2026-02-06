@@ -38,7 +38,7 @@ export class AttachmentComponent {
     if (name.match(/\.(ppt|pptx)$/))
       return 'icon-[mdi--file-powerpoint-outline]';
     if (name.match(/\.(zip|rar|7z|tar|gz)$/))
-      return 'icon-[mdi--file-archive-outline]';
+      return 'icon-[mdi--zip-box-outline]';
     return 'icon-[mdi--file-document-outline]';
   }
 }

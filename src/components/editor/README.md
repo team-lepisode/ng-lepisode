@@ -33,7 +33,7 @@ import { EditorComponent } from '@ng-lepisode';
 <lepi-editor [(value)]="content" [image]="false" />
 
 <!-- Signal Forms와 함께 사용 -->
-<lepi-editor [field]="myForm.content" />
+<lepi-editor [formField]="myForm.content" />
 ```
 
 ---

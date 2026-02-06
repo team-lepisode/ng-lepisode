@@ -1,0 +1,27 @@
+<fieldset class="fieldset" [class]="class()">
+  @if (legend()) {
+    <legend class="fieldset-legend">
+      {{ legend() }}
+      @if (required()) {
+        <span class="text-error ml-1 font-bold">*</span>
+      }
+    </legend>
+  }
+
+  @if (label()) {
+    <span class="fieldset-label">
+      {{ label() }}
+      @if (!legend() && required()) {
+        <span class="text-error ml-1 font-bold">*</span>
+      }
+    </span>
+  }
+
+  <ng-content></ng-content>
+
+  @if (error()) {
+    <p class="fieldset-label text-error text-xs mt-1">{{ error() }}</p>
+  } @else if (helpText()) {
+    <p class="fieldset-label text-xs opacity-60 mt-1">{{ helpText() }}</p>
+  }
+</fieldset>

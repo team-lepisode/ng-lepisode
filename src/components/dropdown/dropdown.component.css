@@ -1,0 +1,10 @@
+:host {
+  display: inline-block;
+}
+
+.dropdown-content {
+  /* Ensure the dropdown content has a consistent premium look */
+  min-width: 10rem;
+}
+
+/* Optional: add any specific premium styling refinements here */

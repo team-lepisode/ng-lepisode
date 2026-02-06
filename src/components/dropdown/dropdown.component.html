@@ -1,0 +1,16 @@
+<div
+  class="dropdown"
+  [class.dropdown-hover]="hover()"
+  [class.dropdown-end]="position() === 'end'"
+  [class.dropdown-top]="position() === 'top'"
+  [class.dropdown-left]="position() === 'left'"
+  [class.dropdown-right]="position() === 'right'"
+  [class.dropdown-bottom]="position() === 'bottom'"
+  [class]="class()">
+  <div tabindex="0" role="button" class="cursor-pointer">
+    <ng-content select="[trigger]"></ng-content>
+  </div>
+  <div tabindex="0" class="dropdown-content z-10" [class]="contentClass()">
+    <ng-content select="[menu]"></ng-content>
+  </div>
+</div>
