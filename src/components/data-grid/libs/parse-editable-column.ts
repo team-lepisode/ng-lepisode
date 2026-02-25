@@ -65,7 +65,7 @@ export const parseEditableColumn = (
 
   if (column.type !== 'list' && column.type !== 'array') {
     let component = TextEditableCellComponent;
-    if (column.type === 'date') {
+    if (column.type === 'date' || column.type === 'datetime') {
       component = DateEditableCellComponent;
     }
 
