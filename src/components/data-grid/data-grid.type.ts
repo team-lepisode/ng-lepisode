@@ -89,6 +89,7 @@ export type DataGridOptions = {
   startDateField?: string;
   endDateField?: string;
   badgeField?: string;
+  colorField?: string;
   /** State persistence configuration */
   persist?: DataGridPersistConfig;
 };

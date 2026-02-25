@@ -1,9 +1,15 @@
 <div class="data-grid-wrapper" [attr.data-view]="store.view()">
   <section class="flex items-center justify-between print:hidden">
-    <div id="data-grid-view-tabs" class="tabs data-grid-views tabs-border">
+    <div
+      id="data-grid-view-tabs"
+      class="tabs data-grid-views gap-1 bg-base-100 rounded-box p-1 border border-base-content/10"
+    >
       <button
-        class="flex items-center gap-1 tab"
+        class="flex items-center gap-2 tab rounded-box transition-colors"
         [class.tab-active]="store.view() === 'table'"
+        [class.hover:bg-base-200]="store.view() !== 'table'"
+        [class.text-primary]="store.view() === 'table'"
+        [class.bg-primary/10]="store.view() === 'table'"
         (click)="setView('table')"
       >
         <span class="icon-[tabler--table-dashed]"></span>
@@ -12,8 +18,11 @@
 
       @if (!store.galleryDisabled()) {
         <button
-          class="flex items-center gap-1 tab"
+          class="flex items-center gap-2 tab rounded-box transition-colors"
           [class.tab-active]="store.view() === 'gallery'"
+          [class.hover:bg-base-200]="store.view() !== 'gallery'"
+          [class.text-primary]="store.view() === 'gallery'"
+          [class.bg-primary/10]="store.view() === 'gallery'"
           (click)="setView('gallery')"
         >
           <span class="icon-[tabler--layout-grid]"></span>
@@ -22,8 +31,11 @@
       }
       @if (!store.calendarDisabled()) {
         <button
-          class="flex items-center gap-1 tab"
+          class="flex items-center gap-2 tab rounded-box transition-colors"
           [class.tab-active]="store.view() === 'calendar'"
+          [class.hover:bg-base-200]="store.view() !== 'calendar'"
+          [class.text-primary]="store.view() === 'calendar'"
+          [class.bg-primary/10]="store.view() === 'calendar'"
           (click)="setView('calendar')"
         >
           <span class="icon-[tabler--calendar-event-filled]"></span>
