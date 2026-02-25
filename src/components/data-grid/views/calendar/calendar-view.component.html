@@ -1,7 +1,25 @@
-<full-calendar [events]="events()" [options]="calendarOptions">
-  <ng-template #eventContent let-arg>
-    <div class="p-2">
-      <b>{{ arg.event.title }}</b>
-    </div>
-  </ng-template>
-</full-calendar>
+<section
+  class="select-none flex flex-col h-full w-full bg-base-100 p-4 rounded-box border border-base-content/5"
+>
+  <app-calendar-toolbar
+    [title]="currentTitle()"
+    [currentView]="currentView()"
+    [availableViews]="availableViews"
+    (action)="onToolbarAction($event)"
+  />
+
+  <full-calendar
+    class="border rounded-box border-base-content/10"
+    #fullCalendar
+    [events]="events()"
+    [options]="calendarOptions"
+  >
+    <ng-template #eventContent let-arg>
+      <app-calendar-event
+        [event]="arg.event"
+        [eventColor]="getEventColor(arg.event)"
+        [showTime]="false"
+      />
+    </ng-template>
+  </full-calendar>
+</section>

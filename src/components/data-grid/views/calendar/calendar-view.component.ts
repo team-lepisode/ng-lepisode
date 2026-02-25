@@ -1,16 +1,19 @@
 import {
   Component,
+  ViewEncapsulation,
   computed,
   ElementRef,
   inject,
+  signal,
   viewChild,
 } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import {
-  Calendar,
+  CalendarApi,
   CalendarOptions,
+  DatesSetArg,
+  EventApi,
   EventInput,
-  EventSourceInput,
 } from '@fullcalendar/core';
 import koLocale from '@fullcalendar/core/locales/ko';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -19,10 +22,22 @@ import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { injectResize } from 'ngxtension/resize';
 import { DataGridComponentStore } from '../../data-grid.component.store';
+import {
+  CalendarToolbarAction,
+  CalendarViewType,
+} from './components/calendar-toolbar.component';
+import { CalendarToolbarComponent } from './components/calendar-toolbar.component';
+import { CalendarEventComponent } from './components/calendar-event.component';
 
 @Component({
   templateUrl: './calendar-view.component.html',
-  imports: [FullCalendarModule],
+  styleUrls: ['./calendar-view.component.css'],
+  imports: [
+    FullCalendarModule,
+    CalendarEventComponent,
+    CalendarToolbarComponent,
+  ],
+  encapsulation: ViewEncapsulation.None,
 })
 export class CalendarViewComponent {
   private readonly store = inject(DataGridComponentStore);
@@ -32,25 +47,42 @@ export class CalendarViewComponent {
 
   resize$ = injectResize();
 
-  calendar: Calendar | null = null;
+  currentView = signal<CalendarViewType>('dayGridMonth');
+  currentTitle = signal('');
+
+  private readonly colorPalette = [
+    'var(--color-primary)',
+    'var(--color-secondary)',
+    'var(--color-accent)',
+    'var(--color-info)',
+    'var(--color-success)',
+    'var(--color-warning)',
+    'var(--color-error)',
+  ] as const;
+
+  readonly availableViews = [
+    { value: 'dayGridMonth' as CalendarViewType, label: '월' },
+    { value: 'listWeek' as CalendarViewType, label: '주' },
+  ];
+
+  private calendarApi: CalendarApi | null = null;
+
+  constructor() {
+    // Calendar API는 datesSet 콜백에서 초기화됨
+  }
 
   events = computed<EventInput[]>(() => {
-    const startDateField = this.store.options().startDateField;
-    const endDateField = this.store.options().endDateField;
-    const titleField = this.store.options().titleField;
+    const { startDateField, endDateField, titleField } = this.store.options();
     if (!startDateField || !endDateField || !titleField) return [];
 
-    const events = this.store.rowData().map((row) => {
-      return {
-        id: row.id,
-        allDay: true,
-        title: row[titleField],
-        start: row[startDateField],
-        end: row[endDateField],
-        extendedProps: row,
-      };
-    });
-    return events;
+    return this.store.rowData().map((row) => ({
+      id: row.id,
+      allDay: true,
+      title: row[titleField],
+      start: row[startDateField],
+      end: row[endDateField],
+      extendedProps: row,
+    }));
   });
 
   calendarOptions: CalendarOptions = {
@@ -61,45 +93,79 @@ export class CalendarViewComponent {
     editable: true,
     eventDurationEditable: true,
     eventResizableFromStart: true,
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,listWeek',
-    },
-    eventClick: (info) => {
-      const data = this.store.rowData().find((row) => row.id === info.event.id);
-      if (data) {
-        this.store.onDetailClick?.(data);
-      }
-    },
-    eventDrop: (info) => {
-      console.log(info.event);
-      const data = this.store.rowData().find((row) => row.id === info.event.id);
-      if (data) {
-        const startDateField = this.store.options().startDateField;
-        const endDateField = this.store.options().endDateField;
-        if (!startDateField || !endDateField) return;
-        const newData = {
-          ...data,
-          [startDateField]: info.event.start,
-          [endDateField]: info.event.end,
-        };
-        this.store.onCellEdit?.(newData);
-      }
-    },
-    eventResize: (info) => {
-      const data = this.store.rowData().find((row) => row.id === info.event.id);
-      if (data) {
-        const startDateField = this.store.options().startDateField;
-        const endDateField = this.store.options().endDateField;
-        if (!startDateField || !endDateField) return;
-        const newData = {
-          ...data,
-          [startDateField]: info.event.start,
-          [endDateField]: info.event.end,
-        };
-        this.store.onCellEdit?.(newData);
-      }
-    },
+    eventDisplay: 'block',
+    dayMaxEvents: true,
+    headerToolbar: false,
+    datesSet: (args: DatesSetArg) => this.handleDatesSet(args),
+    dayHeaderFormat: { weekday: 'short' },
+    eventClick: (info) => this.handleEventClick(info),
+    eventDrop: (info) => this.handleEventDrop(info),
+    eventResize: (info) => this.handleEventResize(info),
   };
+
+  private handleDatesSet(args: DatesSetArg): void {
+    this.calendarApi = args.view.calendar;
+    this.currentTitle.set(args.view.title);
+    this.currentView.set(args.view.type as CalendarViewType);
+  }
+
+  getEventColor(event: EventApi): string {
+    const colorField = this.store.options().colorField;
+    if (colorField && event.extendedProps?.[colorField]) {
+      return event.extendedProps[colorField];
+    }
+    const index =
+      Math.abs(event.id?.toString().length ?? 0) % this.colorPalette.length;
+    return this.colorPalette[index];
+  }
+
+  onToolbarAction(action: CalendarToolbarAction): void {
+    if (!this.calendarApi) return;
+
+    switch (action.type) {
+      case 'prev':
+        this.calendarApi.prev();
+        break;
+      case 'next':
+        this.calendarApi.next();
+        break;
+      case 'today':
+        this.calendarApi.today();
+        break;
+      case 'viewChange':
+        if (action.view) {
+          this.calendarApi.changeView(action.view);
+        }
+        break;
+    }
+  }
+
+  private handleEventClick(info: { event: EventApi }): void {
+    const data = this.store.rowData().find((row) => row.id === info.event.id);
+    if (data) {
+      this.store.onDetailClick?.(data);
+    }
+  }
+
+  private handleEventDrop(info: { event: EventApi }): void {
+    this.updateEventDates(info.event);
+  }
+
+  private handleEventResize(info: { event: EventApi }): void {
+    this.updateEventDates(info.event);
+  }
+
+  private updateEventDates(event: EventApi): void {
+    const data = this.store.rowData().find((row) => row.id === event.id);
+    if (!data) return;
+
+    const { startDateField, endDateField } = this.store.options();
+    if (!startDateField || !endDateField) return;
+
+    this.store.onCellEdit?.({
+      ...data,
+      [startDateField]: event.start,
+      [endDateField]: event.end,
+    });
+  }
 }
