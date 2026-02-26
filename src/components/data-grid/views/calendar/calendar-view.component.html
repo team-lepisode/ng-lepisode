@@ -1,7 +1,6 @@
-<section
-  class="select-none flex flex-col h-full w-full bg-base-100 p-4 rounded-box border border-base-content/5"
->
+<section class="select-none flex flex-col h-full w-full rounded-box">
   <app-calendar-toolbar
+    class="mb-3"
     [title]="currentTitle()"
     [currentView]="currentView()"
     [availableViews]="availableViews"
@@ -19,6 +18,14 @@
         [event]="arg.event"
         [eventColor]="getEventColor(arg.event)"
         [showTime]="false"
+      />
+    </ng-template>
+
+    <ng-template #listEventContent let-arg>
+      <app-calendar-list-event
+        [event]="arg.event"
+        [eventColor]="getEventColor(arg.event)"
+        [showDate]="true"
       />
     </ng-template>
   </full-calendar>
