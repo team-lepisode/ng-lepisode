@@ -47,7 +47,7 @@ export interface CalendarToolbarAction {
       </p>
 
       <div
-        class="flex items-center gap-1 px-1.5 py-1 rounded-box bg-base-100 border border-base-200"
+        class="flex items-center gap-1 px-1.5 py-1 rounded-box bg-base-100 base border border-base-200/50"
       >
         @for (view of availableViews(); track view.value) {
           <button

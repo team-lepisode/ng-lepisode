@@ -72,9 +72,14 @@
   font-weight: 500 !important;
 }
 
+/* 月뷰 이벤트 하네스 간격 */
+.fc-daygrid-event-harness {
+  margin-bottom: var(--spacing-1) !important;
+}
+
 /* 月뷰 이벤트 블록 */
 .fc-daygrid-event {
-  margin: calc(var(--spacing-1) - 1px) var(--spacing-1) !important;
+  margin: 0 var(--spacing-1) !important;
   border-radius: var(--rounded-sm) !important;
   border: none !important;
   box-shadow: none !important;
@@ -141,7 +146,7 @@ a[data-goto]:hover {
 .fc-list-event {
   background: transparent !important;
   border: none !important;
-  padding: var(--spacing-2) var(--spacing-4) !important;
+  padding: var(--spacing-1) var(--spacing-4) !important;
   margin: 0 !important;
   transition: all 0.15s ease !important;
 }
@@ -150,10 +155,21 @@ a[data-goto]:hover {
   background: transparent !important;
 }
 
-/* FullCalendar 기본 time/title 셀 숨김 (커스텀 이벤트 컴포넌트 사용) */
-.fc-list-event-time,
-.fc-list-event-title {
+/* 기본 컬러 도트 숨김 (커스텀 컴포넌트가 자체 컬러 인디케이터 표시) */
+.fc-list-event-graphic {
   display: none !important;
+}
+
+/* time 셀 숨김 */
+.fc-list-event-time {
+  display: none !important;
+}
+
+/* title 셀: 커스텀 CalendarListEventComponent가 렌더링되는 컨테이너 */
+.fc-list-event-title {
+  display: block !important;
+  width: 100% !important;
+  padding: 0 !important;
 }
 
 /* ─── 시간 그리드 뷰 (timeGridWeek / timeGridDay) ───────────── */
