@@ -1,6 +1,7 @@
 <ng-select
   [items]="items()"
   clearable="false"
+  appendTo="body"
   [ngModel]="modelValue()"
   (ngModelChange)="modelValue.set($event)"
   (blur)="blur.emit(modelValue())"

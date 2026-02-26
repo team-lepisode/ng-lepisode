@@ -1,6 +1,6 @@
 <div class="overflow-auto">
   <div
-    class="w-fit"
+    class="w-fit min-w-full"
     [style]="store.columnSizeVars()"
     [style.width.px]="store.table.getTotalSize()"
   >
@@ -41,9 +41,7 @@
                   [id]="`${header.id}-header-menu`"
                   popover
                   #headerPopover
-                  [style]="
-                    `position-anchor: --${header.id}-header; position-area: bottom span-right`
-                  "
+                  [style]="`position-anchor: --${header.id}-header; position-area: bottom span-right`"
                 >
                   <app-header-menu
                     [column]="header.column"
@@ -94,7 +92,7 @@
           }
         </tr>
       } @empty {
-        <tr>
+        <tr class="empty-row">
           <td [attr.colspan]="store.table.getVisibleFlatColumns().length">
             <div class="flex flex-col items-center justify-center gap-4 py-12">
               <span

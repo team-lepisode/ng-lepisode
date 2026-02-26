@@ -95,11 +95,10 @@
       </div>
 
       <div class="flex gap-2">
-        <label class="input input-sm">
+        <label class="input">
           <span class="icon-[mdi--magnify] size-5"></span>
           <input
             type="search"
-            class="text-sm"
             [ngModel]="store.query()"
             (ngModelChange)="store.query.set($event)"
           />
@@ -122,7 +121,7 @@
       class="flex justify-end gap-1 px-2 print:hidden"
     >
       <select
-        class="select select-sm w-[20ch]"
+        class="select w-[20ch]"
         [ngModel]="store.pageSize()"
         (ngModelChange)="store.pageSize.set($event)"
       >
@@ -133,14 +132,14 @@
 
       <div class="join">
         <button
-          class="join-item btn btn-square btn-sm"
+          class="join-item btn btn-square"
           (click)="goFirstPage()"
           [disabled]="!store.table.getCanPreviousPage()"
         >
           <span class="icon-[mdi--chevron-double-left] size-5"></span>
         </button>
         <button
-          class="join-item btn btn-square btn-sm"
+          class="join-item btn btn-square"
           (click)="goPreviousPage()"
           [disabled]="!store.table.getCanPreviousPage()"
         >
@@ -151,7 +150,7 @@
       <div class="join">
         @for (_pageIndex of store.table.getPageCount() | repeat; track $index) {
           <button
-            class="join-item btn btn-sm btn-square"
+            class="join-item btn btn-square"
             [class.btn-primary]="
               store.table.getState().pagination.pageIndex === _pageIndex
             "
@@ -164,14 +163,14 @@
 
       <div class="join">
         <button
-          class="join-item btn btn-square btn-sm"
+          class="join-item btn btn-square"
           (click)="goNextPage()"
           [disabled]="!store.table.getCanNextPage()"
         >
           <span class="icon-[mdi--chevron-right] size-5"></span>
         </button>
         <button
-          class="join-item btn btn-square btn-sm"
+          class="join-item btn btn-square"
           (click)="goLastPage()"
           [disabled]="!store.table.getCanNextPage()"
         >

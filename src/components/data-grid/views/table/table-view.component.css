@@ -1,102 +1,109 @@
+/* reset table */
+table {
+  background-color: var(--color-base-100);
+  border-radius: var(--radius-field);
+  border-collapse: collapse;
+  width: 100%;
+  overflow: hidden;
+}
 
-  /* reset table */
-  table {
-    background-color: var(--color-base-100);
-    border-radius: var(--radius-field);
-    border-collapse: collapse;
-    width: 100%;
-    overflow: hidden;
-  }
+tbody {
+  display: block;
+  overflow-y: auto;
+}
 
-  tbody {
-    display: block;
-    overflow-y: auto;
-  }
+tr {
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid var(--color-base-200);
 
-  tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-    border-bottom: 1px solid var(--color-base-200);
-
-    tbody & {
-      transition: background-color 0.15s ease-in-out;
-
-      &:hover {
-        background-color: oklch(from var(--color-primary) l c h / 0.1);
-      }
-
-      &:focus-within {
-        background-color: oklch(from var(--color-primary) l c h / 0.2);
-      }
-    }
-  }
-
-  td {
-    margin: 0;
-    text-align: left;
-    user-select: none;
-    overflow: hidden;
-
-    & div.cell-content {
-      padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
-      height: 100%;
-      border-radius: var(--radius-field);
-      transition: box-shadow 0.15s ease-in-out;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      overflow: hidden;
-
-      & > *:first-child {
-        flex: 1;
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      &:focus-within {
-        box-shadow: var(--shadow-md);
-      }
-
-      &:hover button.data-grid-detail-button {
-        transition: opacity 0.15s ease-in-out;
-        opacity: 1;
-      }
-    }
-  }
-
-  thead th {
-    color: oklch(from var(--color-base-content) l c h / 0.7);
-  }
-
-  .th {
-    overflow: hidden;
-
-    & button {
-      overflow: hidden;
-
-      & > span:not(.icon-[tabler--chevron-up]) {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-  }
-
-  .resizer {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    right: 0;
-    width: 4px;
-    background: oklch(from var(--color-primary) l c h / 0.25);
-    cursor: col-resize;
-    user-select: none;
-    touch-action: none;
+  tbody & {
+    transition: background-color 0.15s ease-in-out;
 
     &:hover {
-      background: var(--color-primary);
+      background-color: oklch(from var(--color-primary) l c h / 0.1);
+    }
+
+    &:focus-within {
+      background-color: oklch(from var(--color-primary) l c h / 0.2);
     }
   }
+}
+
+td {
+  margin: 0;
+  text-align: left;
+  user-select: none;
+  overflow: visible;
+
+  & div.cell-content {
+    padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+    height: 100%;
+    border-radius: var(--radius-field);
+    transition: box-shadow 0.15s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+
+    & > *:first-child {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &:focus-within {
+      box-shadow: var(--shadow-md);
+    }
+
+    &:hover button.data-grid-detail-button {
+      transition: opacity 0.15s ease-in-out;
+      opacity: 1;
+    }
+  }
+}
+
+thead th {
+  color: oklch(from var(--color-base-content) l c h / 0.7);
+}
+
+.th {
+  overflow: hidden;
+
+  & button {
+    overflow: hidden;
+
+    & > span:not(.icon-[tabler--chevron-up]) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+.resizer {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  right: 0;
+  width: 4px;
+  background: oklch(from var(--color-primary) l c h / 0.25);
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+
+  &:hover {
+    background: var(--color-primary);
+  }
+}
+
+/* 빈 데이터 - 전체 너비 차지 */
+tr.empty-row {
+  width: 100%;
+
+  & td {
+    width: 100%;
+  }
+}
