@@ -25,6 +25,7 @@ import {
 } from './data-grid.type';
 import { CalendarViewComponent } from './views/calendar/calendar-view.component';
 import { GalleryViewComponent } from './views/gallery/gallery-view.component';
+import { KanbanViewComponent } from './views/kanban/kanban-view.component';
 import { TableViewComponent } from './views/table/table-view.component';
 import { DataGridIcons } from './libs/icons';
 
@@ -48,7 +49,7 @@ export class DataGridComponent {
   onCellEdit = output<any>();
   onDetailClick = output<any>();
 
-  view = input<'table' | 'gallery' | 'calendar'>('table');
+  view = input<'table' | 'gallery' | 'calendar' | 'kanban'>('table');
   rowData = input<any[] | undefined>([]);
   columns = input.required<DataGridColumnDef[]>();
   options = input<DataGridOptions>({});
@@ -63,9 +64,13 @@ export class DataGridComponent {
         return CalendarViewComponent;
       case 'gallery':
         return GalleryViewComponent;
+      case 'kanban':
+        return KanbanViewComponent;
       case 'table':
         return TableViewComponent;
     }
+
+    return null;
   });
 
   constructor() {
@@ -101,7 +106,7 @@ export class DataGridComponent {
     };
   }
 
-  setView(view: 'table' | 'gallery' | 'calendar') {
+  setView(view: 'table' | 'gallery' | 'calendar' | 'kanban') {
     this.store.view.set(view);
   }
 

@@ -15,7 +15,7 @@ import { parseColumn } from './libs/parse-column';
 @Injectable()
 export class DataGridComponentStore {
   // State
-  view = signal<'table' | 'gallery' | 'calendar'>('table');
+  view = signal<'table' | 'gallery' | 'calendar' | 'kanban'>('table');
   pageIndex = signal<number>(0);
   pageSize = signal<number>(10);
   query = signal<string>('');
@@ -105,6 +105,7 @@ export class DataGridComponentStore {
       this.endDateField() === null ||
       this.titleField() === null,
   );
+  kanbanDisabled = computed(() => this.options().kanbanGroupField == null);
 
   filterableColumns = computed(() =>
     this.table.getAllColumns().filter((col) => col.getCanFilter()),

@@ -10,15 +10,22 @@ declare module '@tanstack/angular-table' {
   }
 }
 
-export type DataGridViews = 'table' | 'gallery';
+export type DataGridViews = 'table' | 'gallery' | 'kanban';
+
+export type KanbanColumn = {
+  value: string;
+  label: string;
+  color?: string;
+  cards?: any[];
+};
 
 /**
  * Persisted state structure for DataGrid component
  * Stores user preferences and table state across sessions
  */
 export type DataGridPersistedState = {
-  /** Current view mode (table or gallery) */
-  view?: 'table' | 'gallery' | 'calendar';
+  /** Current view mode (table, gallery, calendar, or kanban) */
+  view?: 'table' | 'gallery' | 'calendar' | 'kanban';
   /** Pagination state */
   pagination?: {
     pageIndex: number;
@@ -92,6 +99,10 @@ export type DataGridOptions = {
   colorField?: string;
   /** State persistence configuration */
   persist?: DataGridPersistConfig;
+  /** 칸반 컬럼 그룹핑 기준 필드 (예: 'status', 'priority') */
+  kanbanGroupField?: string;
+  /** 칸반 컬럼 순서 및 레이블 정의 */
+  kanbanColumns?: KanbanColumn[];
 };
 
 export type DataGridColumnTypes =
