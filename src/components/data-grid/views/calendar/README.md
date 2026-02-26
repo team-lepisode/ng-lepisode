@@ -9,8 +9,12 @@ calendar/
 ├── calendar-view.component.ts      # 메인 캘린더 뷰 컴포넌트
 ├── calendar-view.component.html
 ├── calendar-view.component.css
-├── calendar-toolbar.component.ts   # 커스텀 툴바 컴포넌트
-├── calendar-event.component.ts     # 커스텀 이벤트 컴포넌트
+├── components/
+│   ├── calendar-toolbar.component.ts   # 커스텀 툴바 컴포넌트
+│   ├── calendar-event.component.ts     # 월간 이벤트 컴포넌트
+│   └── calendar-list-event.component.ts # 리스트 이벤트 컴포넌트
+├── services/
+│   └── calendar-color-strategy.service.ts  # 색상 전략 서비스
 └── README.md
 ```
 
@@ -59,7 +63,7 @@ type CalendarViewType = 'dayGridMonth' | 'listWeek' | 'timeGridWeek' | 'timeGrid
 
 ### CalendarEventComponent
 
-개별 이벤트 렌더링을 담당합니다.
+월간 뷰의 개별 이벤트 렌더링을 담당합니다.
 
 **Inputs:**
 | 속성 | 타입 | 기본값 | 설명 |
@@ -69,6 +73,66 @@ type CalendarViewType = 'dayGridMonth' | 'listWeek' | 'timeGridWeek' | 'timeGrid
 | `showTime` | `boolean` | `false` | 시간 표시 여부 |
 | `badge` | `string \| null` | `null` | 배지 텍스트 |
 | `badgeClass` | `string` | `''` | 배지 스타일 클래스 |
+
+### CalendarListEventComponent
+
+주간 리스트 뷰의 개별 이벤트 렌더링을 담당합니다.
+
+**Inputs:**
+| 속성 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `event` | `EventApi \| null` | `null` | FullCalendar 이벤트 객체 |
+| `eventColor` | `string` | `'var(--color-primary)'` | 이벤트 색상 (좌측 테두리) |
+| `showDate` | `boolean` | `false` | 날짜 표시 여부 |
+| `badge` | `string \| null` | `null` | 배지 텍스트 |
+| `badgeClass` | `string` | `''` | 배지 스타일 클래스 |
+
+**특징:**
+
+- 카드 형태 디자인
+- 좌측 색상 테두리로 이벤트 구분
+- `showDate: true` 시 기간 표시 (예: "2월 25일 - 2월 28일")
+
+## 서비스
+
+### CalendarColorStrategyService
+
+이벤트 색상 결정 전략을 제공합니다.
+
+```typescript
+@Injectable()
+export class CalendarColorStrategyService {
+  getColor(event: EventApi, options?: ColorStrategyOptions): string;
+  getPaletteColor(index: number): string;
+  getPalette(): readonly string[];
+}
+```
+
+**전략 타입:**
+| 전략 | 설명 |
+|------|------|
+| `sequential` | ID 길이 기반 순차 선택 (기본값) |
+| `field` | `colorField` 옵션으로 지정된 필드 값 사용 |
+| `hash` | ID 해시 기반 분산 선택 |
+
+**사용법:**
+
+```typescript
+const color = colorStrategy.getColor(event, {
+  colorField: 'categoryColor', // 옵션: 데이터 필드명
+  strategy: 'field', // 옵션: 전략 타입
+});
+```
+
+**색상 팔레트:**
+
+- `--color-primary`
+- `--color-secondary`
+- `--color-accent`
+- `--color-info`
+- `--color-success`
+- `--color-warning`
+- `--color-error`
 
 ## 데이터 흐름
 
@@ -145,32 +209,6 @@ calendarOptions: CalendarOptions = {
 3. **상태 동기화** → `datesSet` 콜백에서 상태 업데이트
 4. **UI 업데이트** → 변경된 상태가 Toolbar에 input으로 전달
 
-## 이벤트 색상 전략
-
-```typescript
-getEventColor(event: EventApi): string {
-  // 1. colorField 옵션이 있으면 해당 필드 값 사용
-  const colorField = this.store.options().colorField;
-  if (colorField && event.extendedProps?.[colorField]) {
-    return event.extendedProps[colorField];
-  }
-
-  // 2. 없으면 ID 기반 팔레트에서 자동 선택
-  const index = Math.abs(event.id?.toString().length ?? 0) % this.colorPalette.length;
-  return this.colorPalette[index];
-}
-```
-
-**색상 팔레트:**
-
-- `--color-primary`
-- `--color-secondary`
-- `--color-accent`
-- `--color-info`
-- `--color-success`
-- `--color-warning`
-- `--color-error`
-
 ## 사용 예시
 
 ### 기본 사용법
@@ -181,7 +219,7 @@ const options: DataGridOptions = {
   titleField: 'title',
   startDateField: 'startDate',
   endDateField: 'endDate',
-  colorField: 'categoryColor', // 선택사항: 커스텀 색상 필드
+  colorField: 'color', // 선택사항: 커스텀 색상 필드
 };
 ```
 

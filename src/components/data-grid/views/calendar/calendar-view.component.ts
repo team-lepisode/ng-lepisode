@@ -28,6 +28,8 @@ import {
 } from './components/calendar-toolbar.component';
 import { CalendarToolbarComponent } from './components/calendar-toolbar.component';
 import { CalendarEventComponent } from './components/calendar-event.component';
+import { CalendarListEventComponent } from './components/calendar-list-event.component';
+import { CalendarColorStrategyService } from './services/calendar-color-strategy.service';
 
 @Component({
   templateUrl: './calendar-view.component.html',
@@ -35,12 +37,15 @@ import { CalendarEventComponent } from './components/calendar-event.component';
   imports: [
     FullCalendarModule,
     CalendarEventComponent,
+    CalendarListEventComponent,
     CalendarToolbarComponent,
   ],
   encapsulation: ViewEncapsulation.None,
+  providers: [CalendarColorStrategyService],
 })
 export class CalendarViewComponent {
   private readonly store = inject(DataGridComponentStore);
+  private readonly colorStrategy = inject(CalendarColorStrategyService);
 
   calendarContainerRef =
     viewChild.required<ElementRef<HTMLElement>>('calenderContainer');
@@ -50,26 +55,12 @@ export class CalendarViewComponent {
   currentView = signal<CalendarViewType>('dayGridMonth');
   currentTitle = signal('');
 
-  private readonly colorPalette = [
-    'var(--color-primary)',
-    'var(--color-secondary)',
-    'var(--color-accent)',
-    'var(--color-info)',
-    'var(--color-success)',
-    'var(--color-warning)',
-    'var(--color-error)',
-  ] as const;
-
   readonly availableViews = [
     { value: 'dayGridMonth' as CalendarViewType, label: '월' },
     { value: 'listWeek' as CalendarViewType, label: '주' },
   ];
 
   private calendarApi: CalendarApi | null = null;
-
-  constructor() {
-    // Calendar API는 datesSet 콜백에서 초기화됨
-  }
 
   events = computed<EventInput[]>(() => {
     const { startDateField, endDateField, titleField } = this.store.options();
@@ -110,13 +101,8 @@ export class CalendarViewComponent {
   }
 
   getEventColor(event: EventApi): string {
-    const colorField = this.store.options().colorField;
-    if (colorField && event.extendedProps?.[colorField]) {
-      return event.extendedProps[colorField];
-    }
-    const index =
-      Math.abs(event.id?.toString().length ?? 0) % this.colorPalette.length;
-    return this.colorPalette[index];
+    const { colorField } = this.store.options();
+    return this.colorStrategy.getColor(event, { colorField });
   }
 
   onToolbarAction(action: CalendarToolbarAction): void {

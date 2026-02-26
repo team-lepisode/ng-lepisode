@@ -5,7 +5,7 @@ import { EventApi } from '@fullcalendar/core';
   selector: 'app-calendar-event',
   template: `
     <div
-      class="w-full min-h-8 flex items-center gap-2 px-3 py-1.5 rounded-box shadow hover:shadow-lg hover:bg-base-200/50 border border-[var(--event-color)]/30 border-l-[3px] border-l-[var(--event-color)] bg-base-100 text-base-content text-sm transition-all duration-150"
+      class="w-full min-h-8 flex items-center shadow gap-2 px-3 py-1.5 rounded-box hover:bg-base-200/10 border border-[var(--event-color)]/30 border-l-[3px] border-l-[var(--event-color)] bg-base-100 text-base-content text-sm transition-all"
       [style.--event-color]="eventColor()"
       [title]="event()?.title ?? ''"
     >

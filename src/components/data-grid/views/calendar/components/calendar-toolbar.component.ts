@@ -14,7 +14,7 @@ export interface CalendarToolbarAction {
 @Component({
   selector: 'app-calendar-toolbar',
   template: `
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
         <button
           type="button"
@@ -46,17 +46,20 @@ export interface CalendarToolbarAction {
         {{ title() }}
       </p>
 
-      <div class="flex items-center gap-0.5 p-1 rounded-box bg-base-200">
+      <div
+        class="flex items-center gap-1 px-1.5 py-1 rounded-box bg-base-100 base border border-base-200/50"
+      >
         @for (view of availableViews(); track view.value) {
           <button
             type="button"
-            class="px-4 py-1.5 rounded-box text-sm font-medium transition-all duration-200"
-            [class.bg-base-100]="currentView() === view.value"
+            class="outline-none border px-4 py-1.5 rounded-box text-sm transition-all duration-200 font-semibold"
+            [class.bg-base-200]="currentView() === view.value"
             [class.text-base-content]="currentView() === view.value"
-            [class.border]="currentView() === view.value"
             [class.border-base-content/10]="currentView() === view.value"
-            [class.text-base-content/60]="currentView() !== view.value"
+            [class.border-transparent]="currentView() !== view.value"
             [class.hover:text-base-content]="currentView() !== view.value"
+            [class.text-base-content/60]="currentView() !== view.value"
+            [class.hover:bg-base-200/50]="currentView() !== view.value"
             [title]="view.label"
             (click)="onAction({ type: 'viewChange', view: view.value })"
           >
