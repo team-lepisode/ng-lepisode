@@ -97,6 +97,8 @@ export type DataGridOptions = {
   endDateField?: string;
   badgeField?: string;
   colorField?: string;
+  /** colorField 값 → CSS 색상 문자열 매핑 (예: { HIGH: 'var(--color-error)' }) */
+  colorMap?: Record<string, string>;
   /** State persistence configuration */
   persist?: DataGridPersistConfig;
   /** 칸반 컬럼 그룹핑 기준 필드 (예: 'status', 'priority') */

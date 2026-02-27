@@ -101,8 +101,8 @@ export class CalendarViewComponent {
   }
 
   getEventColor(event: EventApi): string {
-    const { colorField } = this.store.options();
-    return this.colorStrategy.getColor(event, { colorField });
+    const { colorField, colorMap } = this.store.options();
+    return this.colorStrategy.getColor(event, { colorField, colorMap });
   }
 
   onToolbarAction(action: CalendarToolbarAction): void {

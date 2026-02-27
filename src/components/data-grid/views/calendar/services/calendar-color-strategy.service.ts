@@ -6,6 +6,7 @@ export type ColorStrategyType = 'sequential' | 'field' | 'hash';
 export interface ColorStrategyOptions {
   colorField?: string;
   strategy?: ColorStrategyType;
+  colorMap?: Record<string, string>;
 }
 
 @Injectable()
@@ -21,11 +22,12 @@ export class CalendarColorStrategyService {
   ] as const;
 
   getColor(event: EventApi, options?: ColorStrategyOptions): string {
-    const strategy = options?.strategy ?? 'sequential';
+    const strategy =
+      options?.strategy ?? (options?.colorField ? 'field' : 'sequential');
 
     switch (strategy) {
       case 'field':
-        return this.getFieldColor(event, options?.colorField);
+        return this.getFieldColor(event, options);
       case 'hash':
         return this.getHashColor(event);
       default:
@@ -41,9 +43,17 @@ export class CalendarColorStrategyService {
     return this.colorPalette;
   }
 
-  private getFieldColor(event: EventApi, colorField?: string): string {
+  private getFieldColor(
+    event: EventApi,
+    options?: ColorStrategyOptions,
+  ): string {
+    const { colorField, colorMap } = options ?? {};
     if (colorField && event.extendedProps?.[colorField]) {
-      return event.extendedProps[colorField];
+      const fieldValue = event.extendedProps[colorField];
+      if (colorMap && colorMap[fieldValue]) {
+        return colorMap[fieldValue];
+      }
+      return fieldValue;
     }
     return this.getSequentialColor(event);
   }
