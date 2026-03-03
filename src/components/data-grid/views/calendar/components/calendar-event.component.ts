@@ -10,9 +10,14 @@ import { EventApi } from '@fullcalendar/core';
       [title]="event()?.title ?? ''"
     >
       <div
-        class="w-1.5 h-1.5 rounded-full bg-[var(--event-color)] shrink-0"
+        class="rounded-full bg-[var(--event-color)] shrink-0"
+        [class]="priorityDotClass()"
       ></div>
-      <span class="truncate flex-1 font-normal tracking-tight">
+      <span
+        class="truncate flex-1 font-normal tracking-tight"
+        [class.line-through]="isCompleted()"
+        [class.text-base-content/40]="isCompleted()"
+      >
         {{ event()?.title }}
       </span>
       @if (showTime() && event()?.start) {
@@ -37,6 +42,20 @@ export class CalendarEventComponent {
   showTime = input(false);
   badge = input<string | null>(null);
   badgeClass = input('');
+
+  private get extendedProps() {
+    return this.event()?.extendedProps ?? {};
+  }
+
+  /** 완료 여부 */
+  isCompleted = computed(() => this.extendedProps['status'] === 'COMPLETED');
+
+  /** 우선순위에 따른 dot 크기 */
+  priorityDotClass = computed(() => {
+    const priority = this.extendedProps['priority'];
+    if (priority === 'VERY_HIGH' || priority === 'HIGH') return 'w-2 h-2';
+    return 'w-1.5 h-1.5';
+  });
 
   timeText = computed(() => {
     const e = this.event();

@@ -41,7 +41,10 @@ export const parseNonEditableColumn = (
     columnDef.meta!.items = column.items;
 
     columnDef.cell = (cell) => {
-      const value = cell.getValue() as string[]; // value1, value2
+      const value = cell.getValue() as string[];
+      if (!value || !Array.isArray(value) || value.length === 0) {
+        return '';
+      }
 
       const firstThree = value.slice(0, 3);
       if (value.length <= 3) {
@@ -66,6 +69,9 @@ export const parseNonEditableColumn = (
     columnDef.meta!.items = column.items;
     columnDef.cell = (cell) => {
       const value = cell.getValue() as string;
+      if (value == null || value === '') {
+        return '';
+      }
 
       return `<span class="badge badge-soft" data-value="${value}">${value}</span>`;
     };

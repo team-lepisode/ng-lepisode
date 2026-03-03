@@ -12,7 +12,6 @@
   }
 
   .data-grid-container {
-    flex-basis: 100%;
     flex-grow: 0;
     overflow: hidden;
     position: relative;
