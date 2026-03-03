@@ -216,6 +216,8 @@ export type DataGridListColumnDef = DataGridCommonColumnDef & {
   items?: string[];
   field: string | (() => string);
   editable?: boolean;
+  /** 번역 키 prefix (예: 'task.status.' → 'task.status.PENDING') */
+  translatePrefix?: string;
 };
 
 export type DataGridArrayColumnDef = DataGridCommonColumnDef & {
