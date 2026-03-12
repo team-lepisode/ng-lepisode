@@ -68,7 +68,6 @@ export class CalendarViewComponent {
       }
     },
     eventDrop: info => {
-      console.log(info.event);
       const data = this.store.rowData().find(row => row.id === info.event.id);
       if (data) {
         const startDateField = this.store.options().startDateField;
