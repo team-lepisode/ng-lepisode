@@ -1,2 +1,4 @@
-/* Fieldset component styles */
-/* daisyUI 5.0 base classes are used. Add custom styles here if needed. */
+:host {
+  display: block;
+  width: 100%;
+}
