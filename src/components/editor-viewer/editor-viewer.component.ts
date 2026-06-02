@@ -6,7 +6,8 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
+import { sanitizeEditorHtml } from './editor-html-sanitizer';
 
 @Component({
   selector: 'lepi-editor-viewer',
@@ -33,27 +34,9 @@ export class EditorViewerComponent {
   /**
    * Processed and sanitized HTML content
    */
-  sanitizedContent = computed<SafeHtml>(() => {
-    let html = this.content();
-
-    if (!html) {
-      return '';
-    }
-
-    // Remove image tags if requested
-    if (this.removeImages()) {
-      html = this.stripImageTags(html);
-    }
-
-    // Sanitize and trust the HTML
-    return this.sanitizer.bypassSecurityTrustHtml(html);
-  });
-
-  /**
-   * Remove all <img> tags from HTML string
-   */
-  private stripImageTags(html: string): string {
-    // Remove <img> tags (self-closing and with attributes)
-    return html.replace(/<img[^>]*\/?>/gi, '');
-  }
+  sanitizedContent = computed(() =>
+    sanitizeEditorHtml(this.sanitizer, this.content(), {
+      removeImages: this.removeImages(),
+    })
+  );
 }
