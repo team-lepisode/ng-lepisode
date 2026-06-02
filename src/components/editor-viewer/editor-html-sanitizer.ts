@@ -10,6 +10,8 @@ const ENTITY_MAP: Record<string, string> = {
   quot: '"',
 };
 
+const TEXT_ALIGN_PATTERN = /text-align\s*:\s*(left|center|right|justify)\b/i;
+
 function toCodePoint(value: number, fallback: string): string {
   if (!Number.isInteger(value) || value < 0 || value > 0x10ffff) {
     return fallback;
@@ -58,13 +60,55 @@ function stripImageTags(value: string): string {
   return value.replace(/<img[^>]*\/?>/gi, '');
 }
 
+function appendClassAttribute(attributes: string, className: string): string {
+  const classAttributePattern = /\sclass\s*=\s*(["'])(.*?)\1/i;
+  const classMatch = attributes.match(classAttributePattern);
+
+  if (!classMatch) {
+    return `${attributes} class="${className}"`;
+  }
+
+  const currentClasses = classMatch[2].split(/\s+/).filter(Boolean);
+
+  if (currentClasses.includes(className)) {
+    return attributes;
+  }
+
+  return attributes.replace(
+    classAttributePattern,
+    ` class=${classMatch[1]}${[...currentClasses, className].join(' ')}${
+      classMatch[1]
+    }`
+  );
+}
+
+function preserveTextAlignClasses(value: string): string {
+  return value.replace(
+    /<(p|h[1-6]|div|li|td|th)(\s[^>]*)?>/gi,
+    (match: string, tagName: string, attributes: string | undefined) => {
+      const currentAttributes = attributes ?? '';
+      const align = currentAttributes.match(TEXT_ALIGN_PATTERN)?.[1];
+
+      if (!align) {
+        return match;
+      }
+
+      return `<${tagName}${appendClassAttribute(
+        currentAttributes,
+        `lepi-editor-align-${align.toLowerCase()}`
+      )}>`;
+    }
+  );
+}
+
 export function sanitizeEditorHtml(
   sanitizer: DomSanitizer,
   value: string | null | undefined,
   options: { removeImages?: boolean } = {}
 ): string {
   const decoded = decodeHtmlEntities(value ?? '');
-  const html = options.removeImages ? stripImageTags(decoded) : decoded;
+  const aligned = preserveTextAlignClasses(decoded);
+  const html = options.removeImages ? stripImageTags(aligned) : aligned;
 
   return sanitizer.sanitize(SecurityContext.HTML, html) ?? '';
 }

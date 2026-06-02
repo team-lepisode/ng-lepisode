@@ -237,6 +237,104 @@ button.editor-button.active {
 }
 
 /* Image Styles */
+:host ::ng-deep .tiptap .lepi-editor-resizable-image {
+  align-items: flex-start;
+  max-width: 100%;
+  margin: 1em 0;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .tiptap .lepi-editor-resizable-image__wrapper {
+  line-height: 0;
+  max-width: 100%;
+}
+
+:host ::ng-deep .tiptap .lepi-editor-resizable-image img {
+  margin: 0;
+}
+
+:host ::ng-deep .tiptap .lepi-editor-resizable-image__handle {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 2px solid var(--color-primary);
+  border-radius: 999px;
+  background-color: var(--color-base-100);
+  box-shadow: 0 1px 4px color-mix(in oklab, var(--color-base-content) 20%, #0000);
+  opacity: 0;
+  transition:
+    opacity 0.15s,
+    background-color 0.15s,
+    transform 0.15s;
+  transform: translate(var(--resize-handle-x, 0), var(--resize-handle-y, 0))
+    scale(0.85);
+  z-index: 2;
+}
+
+:host
+  ::ng-deep
+  .tiptap
+  .lepi-editor-resizable-image__handle[data-resize-handle='top-left'] {
+  --resize-handle-x: -50%;
+  --resize-handle-y: -50%;
+  cursor: nwse-resize;
+}
+
+:host
+  ::ng-deep
+  .tiptap
+  .lepi-editor-resizable-image__handle[data-resize-handle='top-right'] {
+  --resize-handle-x: 50%;
+  --resize-handle-y: -50%;
+  cursor: nesw-resize;
+}
+
+:host
+  ::ng-deep
+  .tiptap
+  .lepi-editor-resizable-image__handle[data-resize-handle='bottom-left'] {
+  --resize-handle-x: -50%;
+  --resize-handle-y: 50%;
+  cursor: nesw-resize;
+}
+
+:host
+  ::ng-deep
+  .tiptap
+  .lepi-editor-resizable-image__handle[data-resize-handle='bottom-right'] {
+  --resize-handle-x: 50%;
+  --resize-handle-y: 50%;
+  cursor: nwse-resize;
+}
+
+:host
+  ::ng-deep
+  .tiptap
+  .ProseMirror-selectednode.lepi-editor-resizable-image
+  .lepi-editor-resizable-image__wrapper,
+:host
+  ::ng-deep
+  .tiptap
+  .lepi-editor-resizable-image--resizing
+  .lepi-editor-resizable-image__wrapper {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+:host
+  ::ng-deep
+  .tiptap
+  .ProseMirror-selectednode.lepi-editor-resizable-image
+  .lepi-editor-resizable-image__handle,
+:host
+  ::ng-deep
+  .tiptap
+  .lepi-editor-resizable-image--resizing
+  .lepi-editor-resizable-image__handle {
+  opacity: 1;
+  transform: translate(var(--resize-handle-x, 0), var(--resize-handle-y, 0))
+    scale(1);
+}
+
 :host ::ng-deep .tiptap img {
   display: inline-block;
   max-width: 100%;

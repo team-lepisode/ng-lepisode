@@ -144,6 +144,23 @@
   overflow-x: auto;
 }
 
+/* ========== Alignment Styles ========== */
+:host ::ng-deep .tiptap-viewer .lepi-editor-align-left {
+  text-align: left;
+}
+
+:host ::ng-deep .tiptap-viewer .lepi-editor-align-center {
+  text-align: center;
+}
+
+:host ::ng-deep .tiptap-viewer .lepi-editor-align-right {
+  text-align: right;
+}
+
+:host ::ng-deep .tiptap-viewer .lepi-editor-align-justify {
+  text-align: justify;
+}
+
 /* ========== Image Styles ========== */
 :host ::ng-deep .tiptap-viewer img {
   display: inline-block;

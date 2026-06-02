@@ -1,5 +1,10 @@
 import { Injectable, signal } from '@angular/core';
-import { Editor, Extension } from '@tiptap/core';
+import {
+  Editor,
+  Extension,
+  mergeAttributes,
+  ResizableNodeView,
+} from '@tiptap/core';
 import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import Subscript from '@tiptap/extension-subscript';
@@ -17,6 +22,168 @@ export interface EditorConfig {
   onUpdate?: (html: string) => void;
   onSlashCommand?: (props: any) => boolean | void;
 }
+
+const parseImageDimension = (value: unknown): number | null => {
+  if (typeof value === 'number' && Number.isFinite(value) && value > 0) {
+    return Math.round(value);
+  }
+
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const dimension = Number.parseInt(value.replace('px', ''), 10);
+  return Number.isFinite(dimension) && dimension > 0 ? dimension : null;
+};
+
+const getImageDimension = (
+  element: Element,
+  attribute: 'width' | 'height'
+): number | null => {
+  return (
+    parseImageDimension(element.getAttribute(attribute)) ??
+    parseImageDimension(
+      element instanceof HTMLElement ? element.style[attribute] : null
+    )
+  );
+};
+
+const renderImageDimension = (value: unknown): Record<string, number> => {
+  const dimension = parseImageDimension(value);
+  return dimension ? { width: dimension } : {};
+};
+
+const applyImageAttributes = (
+  element: HTMLImageElement,
+  attributes: Record<string, unknown>
+): void => {
+  const src = attributes['src'];
+  const alt = attributes['alt'];
+  const title = attributes['title'];
+  const width = parseImageDimension(attributes['width']);
+  const height = parseImageDimension(attributes['height']);
+
+  if (typeof src === 'string') {
+    element.src = src;
+  }
+
+  if (typeof alt === 'string') {
+    element.alt = alt;
+  } else {
+    element.removeAttribute('alt');
+  }
+
+  if (typeof title === 'string') {
+    element.title = title;
+  } else {
+    element.removeAttribute('title');
+  }
+
+  if (width) {
+    element.setAttribute('width', `${width}`);
+    element.style.width = `${width}px`;
+  } else {
+    element.removeAttribute('width');
+    element.style.removeProperty('width');
+  }
+
+  if (height) {
+    element.setAttribute('height', `${height}`);
+    element.style.height = `${height}px`;
+  } else {
+    element.removeAttribute('height');
+    element.style.removeProperty('height');
+  }
+};
+
+const ResizableImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      width: {
+        default: null,
+        parseHTML: (element: Element) => getImageDimension(element, 'width'),
+        renderHTML: (attributes: Record<string, unknown>) =>
+          renderImageDimension(attributes['width']),
+      },
+      height: {
+        default: null,
+        parseHTML: (element: Element) => getImageDimension(element, 'height'),
+        renderHTML: (attributes: Record<string, unknown>) => {
+          const dimension = parseImageDimension(attributes['height']);
+          return dimension ? { height: dimension } : {};
+        },
+      },
+    };
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)];
+  },
+  addNodeView() {
+    return ({ editor, node, getPos, HTMLAttributes }) => {
+      const image = document.createElement('img');
+
+      applyImageAttributes(image, { ...HTMLAttributes, ...node.attrs });
+
+      const nodeView = new ResizableNodeView({
+        editor,
+        element: image,
+        node,
+        getPos,
+        onResize: (width, height) => {
+          image.style.width = `${Math.round(width)}px`;
+          image.style.height = `${Math.round(height)}px`;
+        },
+        onCommit: (width, height) => {
+          const pos = getPos();
+
+          if (typeof pos !== 'number') {
+            return;
+          }
+
+          const currentNode = editor.state.doc.nodeAt(pos);
+
+          if (!currentNode) {
+            return;
+          }
+
+          editor.view.dispatch(
+            editor.state.tr.setNodeMarkup(pos, undefined, {
+              ...currentNode.attrs,
+              width: Math.round(width),
+              height: Math.round(height),
+            })
+          );
+        },
+        onUpdate: (updatedNode) => {
+          if (updatedNode.type !== node.type) {
+            return false;
+          }
+
+          applyImageAttributes(image, updatedNode.attrs);
+          return true;
+        },
+        options: {
+          directions: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+          min: { width: 80, height: 40 },
+          preserveAspectRatio: true,
+          className: {
+            container: 'lepi-editor-resizable-image',
+            wrapper: 'lepi-editor-resizable-image__wrapper',
+            handle: 'lepi-editor-resizable-image__handle',
+            resizing: 'lepi-editor-resizable-image--resizing',
+          },
+        },
+      });
+
+      nodeView.container.style.display = 'inline-flex';
+      nodeView.container.style.maxWidth = '100%';
+      nodeView.wrapper.style.maxWidth = '100%';
+
+      return nodeView;
+    };
+  },
+});
 
 const SlashCommand = Extension.create({
   name: 'slashCommand',
@@ -103,7 +270,7 @@ export class EditorService {
               },
             },
           }),
-          Image.configure({ allowBase64: true, inline: true }),
+          ResizableImage.configure({ allowBase64: true, inline: true }),
           Highlight.configure({
             multicolor: true,
           }),
